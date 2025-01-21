@@ -12,7 +12,7 @@ func<int> CreateCutin(string _title)
 	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
 	
 	float x1 = GetStgFrameWidth() - 10;
-	float y0 = GetStgFrameHeight() / 6;
+	float y0 = GetStgFrameHeight() * 4 / 6;
 	
 	async
 	{

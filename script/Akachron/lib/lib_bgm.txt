@@ -42,8 +42,13 @@ func<bool> ExPlayBGM(_bgm, bool _replace)
 	{
 		//RemoveSound(current);
 		LoadSound(_bgm);
-		PlayBGM(_bgm, 0, 9999); //TODO: Dictionary of loop times for each track
-		SetCommonData("CURRENT_BGM", _bgm);
+		async
+		{
+			yield; //give it a frame to make sure the background script has started
+			//because danmakufu is haunted
+			PlayBGM(_bgm, 0, 9999); //TODO: Dictionary of loop times for each track
+			SetCommonData("CURRENT_BGM", _bgm);
+		}
 		return true;
 	}
 	return false;

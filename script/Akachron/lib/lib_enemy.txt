@@ -1,7 +1,3 @@
-//Basic utilities to include in every script of type single.
-
-
-
 function CreateGenericAkashicDemon(_isBoss)
 {
 	let enemyType;
@@ -30,43 +26,4 @@ function CreateGenericAkashicDemon(_isBoss)
 		}
 	}
 	return objEnemy;
-}
-
-
-
-
-
-
-
-
-
-
-//For use with addpattern for manually-colored bullets
-//Preferably, use async instead of this
-task _SetColorAtFrame(_obj, _frame, _r, _g, _b)
-{
-	wait(_frame);
-	ObjRender_SetColor(_obj, _r, _g, _b);
-}
-task _SetColorAtFrameHSV(_obj, _frame, _h, _s, _v)
-{
-	wait(_frame);
-	ObjRender_SetColorHSV(_obj, _h, _s, _v);
-}
-
-
-//Learn the functions instead of using this
-//That said, it's not even something to use all the time
-func<void> SharpenShot(_shot)
-{
-	ObjShot_SetPositionRounding(_shot, true);
-	ObjShot_SetAngleRounding(_shot, true);
-}
-func<void> SharpenShots(int[] _shots)
-{
-	for each(shot in _shots)
-	{
-		ObjShot_SetPositionRounding(shot, true);
-		ObjShot_SetAngleRounding(shot, true);	
-	}
 }

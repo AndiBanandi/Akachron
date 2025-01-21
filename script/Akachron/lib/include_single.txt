@@ -1,6 +1,6 @@
 #include "/script/Akachron/shot/Akasha_ShotConst.txt"
 #include "/script/Akachron/lib/const.txt"
 #include "script/default_system/Default_Effect.txt"
-#include "/script/Akachron/lib/lib_single.txt"
+#include "/script/Akachron/lib/lib_enemy.txt"
 #include "/script/Akachron/lib/lib_bgm.txt"
 #include "/script/Akachron/lib/lib_cutin.txt"
