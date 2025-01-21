@@ -1,0 +1,72 @@
+//Basic utilities to include in every script of type single.
+
+
+
+function CreateGenericAkashicDemon(_isBoss)
+{
+	let enemyType;
+	if(typeof(_isBoss) == VAR_BOOL) enemyType = _isBoss ? OBJ_ENEMY_BOSS : OBJ_ENEMY;
+	else enemyType = _isBoss;
+	let objEnemy = ObjEnemy_Create(enemyType);
+	ObjEnemy_Regist(objEnemy);
+	
+	let imgDemon = GetCurrentScriptDirectory~"../img/GenericAkashicDemon.png";
+	ObjPrim_SetTexture(objEnemy, imgDemon);
+	ObjSprite2D_SetSourceRect(objEnemy, 0, 0, 63, 63);
+	ObjSprite2D_SetDestCenter(objEnemy);
+	
+	async
+	{
+		int count = rand(0, 2047);
+		//yield; //give time to set anything manual the loop will need to take into account
+		
+		while(!Obj_IsDeleted(objEnemy))
+		{
+			count += rand(-2,4); //jittery movement that makes it slightly unsettling
+			ObjRender_SetAngleZ(objEnemy, count*15);
+			ObjRender_SetScaleXYZ(objEnemy, 1 + 0.1 * sin(count*30), 1 - 0.1 * cos(count*32), 1);
+			
+			yield;
+		}
+	}
+	return objEnemy;
+}
+
+
+
+
+
+
+
+
+
+
+//For use with addpattern for manually-colored bullets
+//Preferably, use async instead of this
+task _SetColorAtFrame(_obj, _frame, _r, _g, _b)
+{
+	wait(_frame);
+	ObjRender_SetColor(_obj, _r, _g, _b);
+}
+task _SetColorAtFrameHSV(_obj, _frame, _h, _s, _v)
+{
+	wait(_frame);
+	ObjRender_SetColorHSV(_obj, _h, _s, _v);
+}
+
+
+//Learn the functions instead of using this
+//That said, it's not even something to use all the time
+func<void> SharpenShot(_shot)
+{
+	ObjShot_SetPositionRounding(_shot, true);
+	ObjShot_SetAngleRounding(_shot, true);
+}
+func<void> SharpenShots(int[] _shots)
+{
+	for each(shot in _shots)
+	{
+		ObjShot_SetPositionRounding(shot, true);
+		ObjShot_SetAngleRounding(shot, true);	
+	}
+}

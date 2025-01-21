@@ -1,0 +1,35 @@
+func<int> CreateCutin(string _title)
+{
+	int objText = ObjText_Create();
+	ObjText_SetText(objText, _title);	
+	ObjText_SetFontSize(objText, 16);
+	ObjText_SetFontBold(objText, true);
+	ObjText_SetFontColorTop(objText, 255, 255, 0);
+	ObjText_SetFontColorBottom(objText, 255, 64, 0);
+	ObjText_SetFontBorderType(objText, BORDER_FULL);
+	ObjText_SetFontBorderWidth(objText, 2);
+	ObjText_SetFontBorderColor(objText, 64, 0, 64);
+	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
+	
+	float x1 = GetStgFrameWidth() - 10;
+	float y0 = GetStgFrameHeight() / 6;
+	
+	async
+	{
+		ascent(i in 0..30)
+		{
+			ObjRender_SetPosition(objText, Interpolate_Decelerate(0, x1, i/29), y0, 0);
+			float scale = Interpolate_Decelerate(2, 1, i/29);
+			ObjRender_SetScaleXYZ(objText, scale, scale, 1);
+			yield;
+		}
+		wait(60);
+		ascent(i in 0..30)
+		{
+			ObjRender_SetPosition(objText, x1, Interpolate_Accelerate(y0, 20, i/29), 0);
+			yield;
+		}
+	}
+	
+	return objText;
+}

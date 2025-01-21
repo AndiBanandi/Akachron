@@ -1,0 +1,44 @@
+//Some helpful constants
+
+
+//hue is 360-based
+const int HUE_RED			= 0;
+const int HUE_ORANGE		= 30;
+const int HUE_YELLOW 		= 60;
+const int HUE_LIME 			= 90;
+const int HUE_GREEN 		= 120;
+const int HUE_MINT 			= 150;
+const int HUE_AQUA 			= 180;
+const int HUE_SKY 			= 210;
+const int HUE_BLUE 			= 240;
+const int HUE_PURPLE 		= 270;
+const int HUE_MAGENTA 		= 300;
+const int HUE_ROSE 			= 330;
+
+const int SAT_WHITE = 0;
+const int SAT_GRAY = 0;
+const int VAL_BLACK = 0;
+
+
+const string DIR_MODULE = GetModuleDirectory();
+const string DIR_AKA = DIR_MODULE ~ "script/Akachron";
+const string DIR_AKACHRON = DIR_AKA;
+
+const string DIR_LIB 		= DIR_AKA ~ "/lib";
+const string DIR_IMAGE 		= DIR_AKA ~ "/img";
+const string DIR_BGM 		= DIR_AKA ~ "/bgm";
+const string DIR_SOUND 		= DIR_AKA ~ "/sound";
+const string DIR_SHOT 		= DIR_AKA ~ "/shot";
+const string DIR_SYSTEM 	= DIR_AKA ~ "/system";
+const string DIR_SYSIMG 	= DIR_AKA ~ "/system/img";
+const string DIR_BACKGROUND = DIR_AKA ~ "/system/img/background";
+
+
+const string SE_SHOT = DIR_SOUND ~ "/se_aka_shot03.wav";
+
+
+
+//render priorities
+//add to these as I go
+
+const float PRI_BACKGROUND = 0.21;

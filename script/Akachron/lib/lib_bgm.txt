@@ -1,0 +1,50 @@
+
+
+//TODO: convert EVERYTHING to .ogg because apparently .mp3 just doesn't work for some reason
+
+const string BGM_SCRAMBLE_LINE 				= DIR_BGM ~ "/Scramble_Line.ogg";
+const string BGM_THE_FINAL_ARTS 			= DIR_BGM ~ "/THE_FINAL_ARTS.mp3";
+const string BGM_RANDOM_NOISE_GENERATOR		= DIR_BGM ~ "/Random_Noise_Generator.mp3";
+const string BGM_RADAR						= DIR_BGM ~ "/Radar.mp3";
+const string BGM_TERMINAL_FANTOM			= DIR_BGM ~ "/Terminal_Fantom.mp3";
+const string BGM_TAIKO_SOLDIER				= DIR_BGM ~ "/Taiko_Soldier.mp3";
+const string BGM_DANCE_WITH_THE_ARCHENEMY 	= DIR_BGM ~ "/DANCE_WITH_THE_ARCHENEMY.mp3";
+const string BGM_AWAKEN						= DIR_BGM ~ "/AWAKEN.mp3";
+const string BGM_DEAD_PARTY					= DIR_BGM ~ "/Dead_Party.mp3";
+const string BGM_DEVILS_UNIVERSE			= DIR_BGM ~ "/devils_universe.mp3";
+const string BGM_DELUSION				 	= DIR_BGM ~ "/Delusion.ogg";
+const string BGM_ASH					 	= DIR_BGM ~ "/ash_2.ogg";
+const string BGM_ABSTRACT				 	= DIR_BGM ~ "/Abstract.ogg";
+const string BGM_A_BLACK_SPHERE			 	= DIR_BGM ~ "/A_Black_Sphere.ogg";
+const string BGM_FALLING_SKY			 	= DIR_BGM ~ "/Falling_Sky.ogg";
+const string BGM_GREEN_FLAME			 	= DIR_BGM ~ "/Green_Flame.ogg";
+
+
+//TODO: Random option
+// GetFilePathList(path)?
+
+//string[][] _bgmList = [[]];
+//2d array containing: [ [key, filepath, loopstart, loopend ] ]
+//will need to store the loop start and end as strings and cast to float on retrieval
+//key and filepath might be the same for the moment, but storing them separately could allow a more efficient key later
+//also, it's possible that using an integer or float key, the filepath could be stored separately in an object dictionary...
+
+//alternatively, the constants could be reworked as string[] [path, title, start, end]... this may be advisable
+//yes, that's what I'll do. from there, they can be easily put into an array for the random option, as well.
+
+//theoretically I could cram the whole thing into a string, i think that's what i did last time, but no
+
+func<bool> ExPlayBGM(_bgm, bool _replace)
+{
+	//_replace: Whether to replace a currently playing track.
+	//Allows each single to set a music without disrupting when used in a plural.
+	if(_replace || GetCommonData("CURRENT_BGM", "") == "")
+	{
+		//RemoveSound(current);
+		LoadSound(_bgm);
+		PlayBGM(_bgm, 0, 9999); //TODO: Dictionary of loop times for each track
+		SetCommonData("CURRENT_BGM", _bgm);
+		return true;
+	}
+	return false;
+}
