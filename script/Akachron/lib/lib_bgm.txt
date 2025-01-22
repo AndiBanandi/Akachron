@@ -3,15 +3,15 @@
 //TODO: convert EVERYTHING to .ogg because apparently .mp3 just doesn't work for some reason
 
 const string BGM_SCRAMBLE_LINE 				= DIR_BGM ~ "/Scramble_Line.ogg";
-const string BGM_THE_FINAL_ARTS 			= DIR_BGM ~ "/THE_FINAL_ARTS.mp3";
-const string BGM_RANDOM_NOISE_GENERATOR		= DIR_BGM ~ "/Random_Noise_Generator.mp3";
-const string BGM_RADAR						= DIR_BGM ~ "/Radar.mp3";
-const string BGM_TERMINAL_FANTOM			= DIR_BGM ~ "/Terminal_Fantom.mp3";
-const string BGM_TAIKO_SOLDIER				= DIR_BGM ~ "/Taiko_Soldier.mp3";
-const string BGM_DANCE_WITH_THE_ARCHENEMY 	= DIR_BGM ~ "/DANCE_WITH_THE_ARCHENEMY.mp3";
-const string BGM_AWAKEN						= DIR_BGM ~ "/AWAKEN.mp3";
-const string BGM_DEAD_PARTY					= DIR_BGM ~ "/Dead_Party.mp3";
-const string BGM_DEVILS_UNIVERSE			= DIR_BGM ~ "/devils_universe.mp3";
+const string BGM_THE_FINAL_ARTS 			= DIR_BGM ~ "/THE_FINAL_ARTS.ogg";
+const string BGM_RANDOM_NOISE_GENERATOR		= DIR_BGM ~ "/Random_Noise_Generator.ogg";
+const string BGM_RADAR						= DIR_BGM ~ "/Radar.ogg";
+const string BGM_TERMINAL_FANTOM			= DIR_BGM ~ "/Terminal_Fantom.ogg";
+const string BGM_TAIKO_SOLDIER				= DIR_BGM ~ "/Taiko_Soldier.ogg";
+const string BGM_DANCE_WITH_THE_ARCHENEMY 	= DIR_BGM ~ "/DANCE_WITH_THE_ARCHENEMY.ogg";
+const string BGM_AWAKEN						= DIR_BGM ~ "/AWAKEN.ogg";
+const string BGM_DEAD_PARTY					= DIR_BGM ~ "/Dead_Party.ogg";
+const string BGM_DEVILS_UNIVERSE			= DIR_BGM ~ "/devils_universe.ogg";
 const string BGM_DELUSION				 	= DIR_BGM ~ "/Delusion.ogg";
 const string BGM_ASH					 	= DIR_BGM ~ "/ash_2.ogg";
 const string BGM_ABSTRACT				 	= DIR_BGM ~ "/Abstract.ogg";
