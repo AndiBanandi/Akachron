@@ -33,3 +33,15 @@ func<int> CreateCutin(string _title)
 	
 	return objText;
 }
+
+
+func<int> BindCreateCutin(string _title, int _objBound)
+{
+	int objCutin = CreateCutin(_title);
+	async
+	{
+		while(!Obj_IsDeleted(_objBound)) yield;
+		Obj_Delete(objCutin);
+	}
+	return objCutin;
+}
