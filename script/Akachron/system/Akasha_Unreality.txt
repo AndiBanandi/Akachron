@@ -2,8 +2,9 @@
 
 
 
-float _humes = 0.005; //unit of realness - 1.0 is "baseline", currently defaults to 0.5 for testing purposes
+float _humes = 0.9; //unit of realness - 1.0 is "baseline", currently defaults to 0.5 for testing purposes
 int _numActiveEffects = 0;
+int _objShader;
 
 @Initialize
 {
@@ -38,38 +39,32 @@ task _Main()
 
 task _DeadRegion(float thresh_)
 {	
-	string renderTarg = "RENDERTARGET_SCREENSHOT";
+	string renderTarg = "RENDERTARGET_SCREENSHOT" ~ ToString(rand_int(0, 9999));
 	CreateRenderTarget(renderTarg);
 	
-	//SetInvalidRenderPriorityA1(0.0, 0.21);
-	//SetInvalidRenderPriorityA1(0.27, 1.0);
-	
-	float lower = 0.0;
-	float upper = 1.0;
+	const int lower = 20;
+	const int upper = 80;
+	const int objPri = 90;
 	
 	SetInvalidRenderPriorityA1(lower, upper);
-	RenderToTextureA1(renderTarg, lower, upper, true);
+	RenderToTextureA1(renderTarg, lower, upper, false);
 	ClearInvalidRenderPriority();
-
-	//string path = DIR_SYSTEM ~ "/img/temp.png";
-	//SaveRenderedTextureA1(renderTarg, path);
 	
-	//SaveSnapShotA1(path);
+	yield;
 	
 	int prim = ObjPrim_Create(OBJ_PRIMITIVE_2D);
 	ObjPrim_SetPrimitiveType(prim, PRIMITIVE_TRIANGLELIST);
 	ObjPrim_SetVertexCount(prim, 3);
 	ObjPrim_SetTexture(prim, renderTarg);
-	//Obj_SetRenderPriority(prim, 0.81);
-	//Obj_SetRenderPriority(prim, objPri);
+	Obj_SetRenderPriorityI(prim, objPri);
+	Obj_SetRenderPriorityI(prim, 90);
 	
 	float centerX = rand(0, GetScreenWidth());
 	float centerY = rand(0, GetScreenHeight());
 	
-	float offsetX = rand(-10, 10);
-	float offsetY = rand(-10, 10);
+	float offsetX = rand(-2, 2);
+	float offsetY = rand(-2, 2);
 
-	Obj_SetRenderPriority(prim, 1.0);
 	
 	float[] xVerts = [];
 	float[] yVerts = [];
@@ -90,9 +85,11 @@ task _DeadRegion(float thresh_)
 	
 	while(_humes <= thresh_ && (rand(0, 1000) > 1))
 	{
+		//ObjRender_SetPosition(prim, rand(-1, 1), rand(-1, 1), 0);
 		yield;
 	}
 	
 	Obj_Delete(prim);
+	ClearRenderTargetA1(renderTarg);
 	_numActiveEffects--;
 }
