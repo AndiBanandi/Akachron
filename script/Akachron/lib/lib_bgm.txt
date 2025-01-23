@@ -1,23 +1,78 @@
 
 
-//TODO: convert EVERYTHING to .ogg because apparently .mp3 just doesn't work for some reason
-
-const string BGM_SCRAMBLE_LINE 				= DIR_BGM ~ "/Scramble_Line.ogg";
-const string BGM_THE_FINAL_ARTS 			= DIR_BGM ~ "/THE_FINAL_ARTS.ogg";
-const string BGM_RANDOM_NOISE_GENERATOR		= DIR_BGM ~ "/Random_Noise_Generator.ogg";
-const string BGM_RADAR						= DIR_BGM ~ "/Radar.ogg";
-const string BGM_TERMINAL_FANTOM			= DIR_BGM ~ "/Terminal_Fantom.ogg";
-const string BGM_TAIKO_SOLDIER				= DIR_BGM ~ "/Taiko_Soldier.ogg";
-const string BGM_DANCE_WITH_THE_ARCHENEMY 	= DIR_BGM ~ "/DANCE_WITH_THE_ARCHENEMY.ogg";
-const string BGM_AWAKEN						= DIR_BGM ~ "/AWAKEN.ogg";
-const string BGM_DEAD_PARTY					= DIR_BGM ~ "/Dead_Party.ogg";
+//Demon music
 const string BGM_DEVILS_UNIVERSE			= DIR_BGM ~ "/devils_universe.ogg";
+const string BGM_ACID_SURVIVOR			 	= DIR_BGM ~ "/Acid_Survivor.ogg";
+const string BGM_DEVIL						= DIR_BGM ~ "/Devil.ogg";
+const string BGM_DANCE_WITH_THE_ARCHENEMY 	= DIR_BGM ~ "/DANCE_WITH_THE_ARCHENEMY.ogg";
+const string BGM_SHIFTER					= DIR_BGM ~ "/Shifter.ogg"; //pure demon
+const string BGM_TERMINAL_FANTOM			= DIR_BGM ~ "/Terminal_Fantom.ogg"; //pure demon
+const string BGM_TAIKO_SOLDIER				= DIR_BGM ~ "/Taiko_Soldier.ogg";
+const string BGM_STEEL_KING				 	= DIR_BGM ~ "/Steel_King.ogg";
+const string BGM_ST4R_DUST				 	= DIR_BGM ~ "/ST4R_DUST.ogg";
+const string BGM_RUINED_CITY			 	= DIR_BGM ~ "/Ruined_City.ogg";
+const string BGM_INSOMNIA				 	= DIR_BGM ~ "/insomnia.ogg";
+const string BGM_ULTRA_HERO				 	= DIR_BGM ~ "/Ultra_Hero.ogg";
+const string BGM_REBOOT					 	= DIR_BGM ~ "/Reboot.ogg";
+const string BGM_RANDOM_NOISE_GENERATOR		= DIR_BGM ~ "/Random_Noise_Generator.ogg";
+const string BGM_DRIFT_AWAY					= DIR_BGM ~ "/Drift_Away.ogg";
+const string BGM_DEMONS_AHEAD			 	= DIR_BGM ~ "/Demons_Ahead.ogg"; //fight or stage
+const string BGM_NOISE			 			= DIR_BGM ~ "/Noise.ogg"; //short, needs loop
+const string BGM_DEATH_BORG		 			= DIR_BGM ~ "/Death_Borg.ogg";
+const string BGM_PRODIGYS_THOUGHT		 	= DIR_BGM ~ "/Prodigys_thought.ogg";
+const string BGM_CYBER_ATTACK			 	= DIR_BGM ~ "/Cyber__Attack.ogg";
+const string BGM_BERSERKER				 	= DIR_BGM ~ "/Berserker.ogg";
+const string BGM_NAMELESS_EMOTIONS		 	= DIR_BGM ~ "/Nameless_Emotions.ogg";
+const string BGM_SOUND_WAVE				 	= DIR_BGM ~ "/Sound_Wave.ogg"; //demon/upbeat
+const string BGM_8_BATTLE_ROCK			 	= DIR_BGM ~ "/BGM008_-_戦闘2_-_ロック.ogg";
+
+
+//Stage music
+const string BGM_ENTER_NEW_WORLD		 	= DIR_BGM ~ "/enter_new_world.ogg";
+const string BGM_CHAIN_DATURA			 	= DIR_BGM ~ "/Chain_Datura.ogg";
+const string BGM_METEORITE				 	= DIR_BGM ~ "/Meteorite.ogg";
+const string BGM_SCRAP_WORLD			 	= DIR_BGM ~ "/Scrap_World.ogg";
+const string BGM_DEAD_PARTY					= DIR_BGM ~ "/Dead_Party.ogg";
 const string BGM_DELUSION				 	= DIR_BGM ~ "/Delusion.ogg";
-const string BGM_ASH					 	= DIR_BGM ~ "/ash_2.ogg";
+const string BGM_STATEMENT				 	= DIR_BGM ~ "/Statement.ogg";
+const string BGM_SHADES_OF_THE_PAST		 	= DIR_BGM ~ "/Shades_of_the_Past.ogg";
+const string BGM_SENSE_OF_MISSION		 	= DIR_BGM ~ "/Sense_of_mission_2.ogg";
+const string BGM_TECH_CUBE				 	= DIR_BGM ~ "/Tech-Cube.ogg";
+const string BGM_GRAVIS_GRADUS			 	= DIR_BGM ~ "/Gravis_Gradus.ogg";
+const string BGM_RADAR						= DIR_BGM ~ "/Radar.ogg";
+const string BGM_AWAKEN						= DIR_BGM ~ "/AWAKEN.ogg";
 const string BGM_ABSTRACT				 	= DIR_BGM ~ "/Abstract.ogg";
+const string BGM_GREEN_FLAME			 	= DIR_BGM ~ "/Green_Flame.ogg";
+const string BGM_NEGATION_BEAT			 	= DIR_BGM ~ "/Negation_Beat.ogg";
+const string BGM_FREAK_OF_LIGHT			 	= DIR_BGM ~ "/Freak_Of_Light.ogg";
+const string BGM_NIGHT_CITY_SAFARI		 	= DIR_BGM ~ "/Night_City_Safari.ogg";
+const string BGM_BOUND_BOX				 	= DIR_BGM ~ "/Bound_Box.ogg";
+const string BGM_DARKER_TIMES			 	= DIR_BGM ~ "/Darker_Times.ogg";
+const string BGM_HADES					 	= DIR_BGM ~ "/hades.ogg";
+const string BGM_MALICE					 	= DIR_BGM ~ "/Malice.ogg";
+const string BGM_INTRUDER				 	= DIR_BGM ~ "/Intruder.ogg";
+const string BGM_ARTIFICIAL_GAMES		 	= DIR_BGM ~ "/Artificial_Games.ogg";
+
+
+//Upbeat music
+const string BGM_SCRAMBLE_LINE 				= DIR_BGM ~ "/Scramble_Line.ogg";
+const string BGM_PASSION_BULLET			 	= DIR_BGM ~ "/Passion_bullet.ogg";
+const string BGM_VILLAIN				 	= DIR_BGM ~ "/Villain.ogg";
+const string BGM_TERRA					 	= DIR_BGM ~ "/TERRA.ogg";
+const string BGM_STATEMENT				 	= DIR_BGM ~ "/Statement.ogg";
+const string BGM_ASH					 	= DIR_BGM ~ "/ash_2.ogg";
+const string BGM_CYNICAL_TONE			 	= DIR_BGM ~ "/cynical_tone.ogg";
+const string BGM_BOUND_GAME				 	= DIR_BGM ~ "/Bound_Game.ogg";
+
+//Epic music
+const string BGM_THE_FINAL_ARTS 			= DIR_BGM ~ "/THE_FINAL_ARTS.ogg";
+const string BGM_SCENE_PRISONER			 	= DIR_BGM ~ "/Scene_Prisoner.ogg";
+const string BGM_PHOENIX				 	= DIR_BGM ~ "/Phoenix.ogg";
+const string BGM_DUGEON					 	= DIR_BGM ~ "/Dugeon_胎道.ogg";
 const string BGM_A_BLACK_SPHERE			 	= DIR_BGM ~ "/A_Black_Sphere.ogg";
 const string BGM_FALLING_SKY			 	= DIR_BGM ~ "/Falling_Sky.ogg";
-const string BGM_GREEN_FLAME			 	= DIR_BGM ~ "/Green_Flame.ogg";
+
+//Unsorted music
 
 
 //TODO: Random option
@@ -30,7 +85,7 @@ const string BGM_GREEN_FLAME			 	= DIR_BGM ~ "/Green_Flame.ogg";
 //also, it's possible that using an integer or float key, the filepath could be stored separately in an object dictionary...
 
 //alternatively, the constants could be reworked as string[] [path, title, start, end]... this may be advisable
-//yes, that's what I'll do. from there, they can be easily put into an array for the random option, as well.
+//yes, that's what I'll do. from there, they can be easily put into arrays for the random option, as well.
 
 //theoretically I could cram the whole thing into a string, i think that's what i did last time, but no
 
