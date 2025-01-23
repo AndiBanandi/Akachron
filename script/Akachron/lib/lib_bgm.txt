@@ -34,7 +34,6 @@ const string BGM_METEORITE				 	= DIR_BGM ~ "/Meteorite.ogg";
 const string BGM_SCRAP_WORLD			 	= DIR_BGM ~ "/Scrap_World.ogg";
 const string BGM_DEAD_PARTY					= DIR_BGM ~ "/Dead_Party.ogg";
 const string BGM_DELUSION				 	= DIR_BGM ~ "/Delusion.ogg";
-const string BGM_STATEMENT				 	= DIR_BGM ~ "/Statement.ogg";
 const string BGM_SHADES_OF_THE_PAST		 	= DIR_BGM ~ "/Shades_of_the_Past.ogg";
 const string BGM_SENSE_OF_MISSION		 	= DIR_BGM ~ "/Sense_of_mission_2.ogg";
 const string BGM_TECH_CUBE				 	= DIR_BGM ~ "/Tech-Cube.ogg";
