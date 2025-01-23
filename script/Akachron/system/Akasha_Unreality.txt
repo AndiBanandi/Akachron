@@ -1,0 +1,102 @@
+#include "/script/Akachron/lib/include_system.txt"
+
+
+
+float _humes = 0.005; //unit of realness - 1.0 is "baseline", currently defaults to 0.5 for testing purposes
+int _numActiveEffects = 0;
+
+@Initialize
+{
+	_Main();
+}
+
+@MainLoop
+{
+	yield;
+}
+
+@Event
+{
+	//TODO: Events to manually trigger a specific effect
+}
+
+task _Main()
+{
+	loop
+	{
+		_humes = GetCommonData("HUME_LEVEL", _humes);
+		
+		if(_humes < 1.0 & rand(-0.01, _humes * (_numActiveEffects + 0.1)) < 0.1)
+		{
+			_DeadRegion(_humes);
+		}
+		
+		yield;
+	}
+}
+
+task _DeadRegion(float thresh_)
+{	
+	//spaghetti throwing. test multiple methods at once
+	//i have tested all of these methods individually, but perhaps this will find a combination i didn't try
+	int method = rand_int(0, 10);
+	float lower = rand(0, 0.5);
+	float upper = rand(0.5, 1);
+	float objPri = rand(0, 1);
+	bool clear = as_bool(rand_int(0,1));
+	bool useInvalid = as_bool(rand_int(0,1));
+	bool useUniqueRenderTarget = as_bool(rand_int(0, 1));
+	
+	float offsetX = clamp(rand(-10, 10), 0, 10);
+	float offsetY = clamp(rand(-10, 10), 0, 10);
+
+	string renderTarg = "deadRegionTarg";
+	if(useUniqueRenderTarget) renderTarg = "Targ_DeadRegion_" ~ ToString(_numActiveEffects);
+	CreateRenderTarget(renderTarg);
+	
+	if(useInvalid) SetInvalidRenderPriorityA1(0, 1);
+	RenderToTextureA1(renderTarg, lower, upper, clear);
+	if(useInvalid) ClearInvalidRenderPriority();
+	
+	if(method <= 2) renderTarg = GetReservedRenderTargetName(method);
+
+	string path = DIR_SYSTEM ~ "/img/temp.png";
+	SaveRenderedTextureA1(renderTarg, path);
+	
+	if(method >= 7) SaveSnapShotA1(path);
+	
+	int prim = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+	ObjPrim_SetPrimitiveType(prim, PRIMITIVE_TRIANGLELIST);
+	ObjPrim_SetVertexCount(prim, 3);
+	ObjPrim_SetTexture(prim, path);
+	//Obj_SetRenderPriority(prim, 0.81);
+	Obj_SetRenderPriority(prim, objPri);
+	
+	float centerX = rand(0, GetScreenWidth());
+	float centerY = rand(0, GetScreenHeight());
+	
+	float[] xVerts = [];
+	float[] yVerts = [];
+	ascent(i in 0..3)
+	{
+		float th = rand(i * 120, (i+1) * 120);
+		float r = rand(10, 100);
+		
+		xVerts = xVerts ~ [ centerX + r * cos(th) ];
+		yVerts = yVerts ~ [ centerY + r * sin(th) ];
+		
+		ObjPrim_SetVertexPosition(prim, i, xVerts[i] + offsetX, yVerts[i] + offsetY, 0);
+		ObjPrim_SetVertexUVT(prim, i, xVerts[i], yVerts[i]);
+	}
+	
+	_numActiveEffects++;
+	
+	while(_humes <= thresh_ && (rand(0, 1000) > 1))
+	{
+		yield;
+	}
+	
+	Obj_Delete(prim);
+	if(useUniqueRenderTarget) RemoveTexture(renderTarg);
+	_numActiveEffects--;
+}

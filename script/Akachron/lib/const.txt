@@ -46,3 +46,5 @@ const string SE_SHOT_LOUD  = DIR_SOUND ~ "/se_aka_shot03.wav";
 
 const float PRI_BACKGROUND = 0.21;
 const float PRI_SHOT = 0.50;
+const float PRI_STAGE_LOWER = 0.2;
+const float PRI_STAGE_UPPER = 0.8;
