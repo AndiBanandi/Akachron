@@ -18,6 +18,7 @@ int _numActiveEffects = 0;
 @Event
 {
 	//TODO: Events to manually trigger a specific effect
+	//and probably an event to set the hume level because using common data for that is probably teeeeeechnically jank?
 }
 
 task _Main()
@@ -54,7 +55,7 @@ task _DeadRegion(float thresh_)
 	if(useUniqueRenderTarget) renderTarg = "Targ_DeadRegion_" ~ ToString(_numActiveEffects);
 	CreateRenderTarget(renderTarg);
 	
-	if(useInvalid) SetInvalidRenderPriorityA1(0, 1);
+	if(useInvalid) SetInvalidRenderPriorityA1(lower, upper);
 	RenderToTextureA1(renderTarg, lower, upper, clear);
 	if(useInvalid) ClearInvalidRenderPriority();
 	
