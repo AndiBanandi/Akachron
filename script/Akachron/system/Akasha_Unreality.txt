@@ -38,43 +38,38 @@ task _Main()
 
 task _DeadRegion(float thresh_)
 {	
-	//spaghetti throwing. test multiple methods at once
-	//i have tested all of these methods individually, but perhaps this will find a combination i didn't try
-	int method = rand_int(0, 10);
-	float lower = rand(0, 0.5);
-	float upper = rand(0.5, 1);
-	float objPri = rand(0, 1);
-	bool clear = as_bool(rand_int(0,1));
-	bool useInvalid = as_bool(rand_int(0,1));
-	bool useUniqueRenderTarget = as_bool(rand_int(0, 1));
-	
-	float offsetX = clamp(rand(-10, 10), 0, 10);
-	float offsetY = clamp(rand(-10, 10), 0, 10);
-
-	string renderTarg = "deadRegionTarg";
-	if(useUniqueRenderTarget) renderTarg = "Targ_DeadRegion_" ~ ToString(_numActiveEffects);
+	string renderTarg = "RENDERTARGET_SCREENSHOT";
 	CreateRenderTarget(renderTarg);
 	
-	if(useInvalid) SetInvalidRenderPriorityA1(lower, upper);
-	RenderToTextureA1(renderTarg, lower, upper, clear);
-	if(useInvalid) ClearInvalidRenderPriority();
+	//SetInvalidRenderPriorityA1(0.0, 0.21);
+	//SetInvalidRenderPriorityA1(0.27, 1.0);
 	
-	if(method <= 2) renderTarg = GetReservedRenderTargetName(method);
+	float lower = 0.0;
+	float upper = 1.0;
+	
+	SetInvalidRenderPriorityA1(lower, upper);
+	RenderToTextureA1(renderTarg, lower, upper, true);
+	ClearInvalidRenderPriority();
 
-	string path = DIR_SYSTEM ~ "/img/temp.png";
-	SaveRenderedTextureA1(renderTarg, path);
+	//string path = DIR_SYSTEM ~ "/img/temp.png";
+	//SaveRenderedTextureA1(renderTarg, path);
 	
-	if(method >= 7) SaveSnapShotA1(path);
+	//SaveSnapShotA1(path);
 	
 	int prim = ObjPrim_Create(OBJ_PRIMITIVE_2D);
 	ObjPrim_SetPrimitiveType(prim, PRIMITIVE_TRIANGLELIST);
 	ObjPrim_SetVertexCount(prim, 3);
-	ObjPrim_SetTexture(prim, path);
+	ObjPrim_SetTexture(prim, renderTarg);
 	//Obj_SetRenderPriority(prim, 0.81);
-	Obj_SetRenderPriority(prim, objPri);
+	//Obj_SetRenderPriority(prim, objPri);
 	
 	float centerX = rand(0, GetScreenWidth());
 	float centerY = rand(0, GetScreenHeight());
+	
+	float offsetX = rand(-10, 10);
+	float offsetY = rand(-10, 10);
+
+	Obj_SetRenderPriority(prim, 1.0);
 	
 	float[] xVerts = [];
 	float[] yVerts = [];
@@ -90,6 +85,7 @@ task _DeadRegion(float thresh_)
 		ObjPrim_SetVertexUVT(prim, i, xVerts[i], yVerts[i]);
 	}
 	
+	
 	_numActiveEffects++;
 	
 	while(_humes <= thresh_ && (rand(0, 1000) > 1))
@@ -98,6 +94,5 @@ task _DeadRegion(float thresh_)
 	}
 	
 	Obj_Delete(prim);
-	if(useUniqueRenderTarget) RemoveTexture(renderTarg);
 	_numActiveEffects--;
 }

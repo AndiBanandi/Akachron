@@ -2,4 +2,11 @@ Sound effects:
 Made using BFXr
 
 BGM:
-Dova-Syndrome
+Sourced from Dova-Syndrome
+
+Graphics:
+Rabbitlegs / Lina Ciari (character)
+AndiBanandi (funky stuff)
+
+Special thanks:
+Mugenri (debugging)
