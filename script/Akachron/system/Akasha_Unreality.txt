@@ -2,9 +2,8 @@
 
 
 
-float _humes = 0.9; //unit of realness - 1.0 is "baseline", currently defaults to 0.5 for testing purposes
+float _humes = 0.9; //unit of realness - 1.0 is "baseline", 0.9 seems a good baseline for Babel
 int _numActiveEffects = 0;
-int _objShader;
 
 @Initialize
 {
@@ -43,8 +42,8 @@ task _DeadRegion(float thresh_)
 	CreateRenderTarget(renderTarg);
 	
 	const int lower = 20;
-	const int upper = 80;
-	const int objPri = 90;
+	const int upper = 60;
+	const int objPri = 79;
 	
 	SetInvalidRenderPriorityA1(lower, upper);
 	RenderToTextureA1(renderTarg, lower, upper, false);
@@ -61,6 +60,11 @@ task _DeadRegion(float thresh_)
 	
 	float centerX = rand(0, GetScreenWidth());
 	float centerY = rand(0, GetScreenHeight());
+	while(distance(centerX, centerY, GetPlayerX()+GetStgFrameLeft(), GetPlayerY()+GetStgFrameTop()) <= 50)
+	{
+		centerX = rand(0, GetScreenWidth());	
+		centerY = rand(0, GetScreenHeight());	
+	}
 	
 	float offsetX = rand(-2, 2);
 	float offsetY = rand(-2, 2);
@@ -70,8 +74,8 @@ task _DeadRegion(float thresh_)
 	float[] yVerts = [];
 	ascent(i in 0..3)
 	{
-		float th = rand(i * 120, (i+1) * 120);
-		float r = rand(10, 100);
+		float th = rand(i * 120, (i+1) * 100);
+		float r = rand(10, rand(40, 100));
 		
 		xVerts = xVerts ~ [ centerX + r * cos(th) ];
 		yVerts = yVerts ~ [ centerY + r * sin(th) ];
@@ -83,13 +87,39 @@ task _DeadRegion(float thresh_)
 	
 	_numActiveEffects++;
 	
-	while(_humes <= thresh_ && (rand(0, 1000) > 1))
+	int frame = 0;
+	
+	while(_humes <= 1.0 
+	&& (rand(0, 1000) > 1) 
+	&& (frame < 600) 
+	&& distance(centerX, centerY, GetPlayerX()+GetStgFrameLeft(), GetPlayerY()+GetStgFrameTop()) > 50)
 	{
-		//ObjRender_SetPosition(prim, rand(-1, 1), rand(-1, 1), 0);
+		if(rand(0,1000) < frame)
+		{
+			ObjRender_SetPosition(prim, rand(-1, 1), rand(-1, 1), 0);
+			//ObjRender_SetAlpha(prim, rand(200, 255));
+		}
+		frame++;
+		yield;
+	}
+	
+	if(distance(centerX, centerY, GetPlayerX()+GetStgFrameLeft(), GetPlayerY()+GetStgFrameTop()) <= 50)
+	{
+		AddScore(1000);
+		if(GetPlayerSpell() < 1) SetPlayerSpell(clamp(GetPlayerSpell() + 0.5, 0, 1)); //refill up to one bomb charge
+	}
+	
+	descent(i in 0..30)
+	{
+		ObjRender_SetPosition(prim, rand(-1, 1), rand(-1, 1), 0);
+		ObjRender_SetAlpha(prim, 255 * i / 30);
 		yield;
 	}
 	
 	Obj_Delete(prim);
+	RemoveTexture(renderTarg);
 	ClearRenderTargetA1(renderTarg);
+	
+	wait(300); //give it some time before the threshold for creating more lowers again
 	_numActiveEffects--;
 }
