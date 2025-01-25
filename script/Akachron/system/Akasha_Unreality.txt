@@ -23,9 +23,10 @@ int _numActiveEffects = 0;
 
 task _Main()
 {
+	let humePointer = LoadCommonDataValuePointer("HUME_LEVEL", _humes);
 	loop
 	{
-		_humes = GetCommonData("HUME_LEVEL", _humes);
+		if(IsValidCommonDataValuePointer(humePointer)) _humes = GetCommonDataPtr(humePointer, _humes);
 		
 		if(_humes < 1.0 & rand(-0.01, _humes * (_numActiveEffects + 0.1)) < 0.1)
 		{
@@ -42,8 +43,12 @@ task _DeadRegion(float thresh_)
 	CreateRenderTarget(renderTarg);
 	
 	const int lower = 20;
-	const int upper = 60;
-	const int objPri = 79;
+	const int upper = 40;
+	const int objPri = PRI_BACKGROUND + 10;
+	const int stgOffL = 0;
+	const int stgOffT = 0;
+	
+	int playerDist = 999;
 	
 	SetInvalidRenderPriorityA1(lower, upper);
 	RenderToTextureA1(renderTarg, lower, upper, false);
@@ -56,11 +61,10 @@ task _DeadRegion(float thresh_)
 	ObjPrim_SetVertexCount(prim, 3);
 	ObjPrim_SetTexture(prim, renderTarg);
 	Obj_SetRenderPriorityI(prim, objPri);
-	Obj_SetRenderPriorityI(prim, 90);
 	
 	float centerX = rand(0, GetScreenWidth());
 	float centerY = rand(0, GetScreenHeight());
-	while(distance(centerX, centerY, GetPlayerX()+GetStgFrameLeft(), GetPlayerY()+GetStgFrameTop()) <= 50)
+	while(distance(centerX, centerY, GetPlayerX()+stgOffL, GetPlayerY()+stgOffT) <= 50)
 	{
 		centerX = rand(0, GetScreenWidth());	
 		centerY = rand(0, GetScreenHeight());	
@@ -92,21 +96,35 @@ task _DeadRegion(float thresh_)
 	while(_humes <= 1.0 
 	&& (rand(0, 1000) > 1) 
 	&& (frame < 600) 
-	&& distance(centerX, centerY, GetPlayerX()+GetStgFrameLeft(), GetPlayerY()+GetStgFrameTop()) > 50)
+	//&& playerDist > 50
+	)
 	{
+		playerDist = distance(centerX, centerY, GetPlayerX()+stgOffL, GetPlayerY()+stgOffT);
 		if(rand(0,1000) < frame)
 		{
 			ObjRender_SetPosition(prim, rand(-1, 1), rand(-1, 1), 0);
-			//ObjRender_SetAlpha(prim, rand(200, 255));
+			ObjRender_SetColor(prim, rand(200, 255), rand(200, 255), rand(200, 255));
 		}
+		else if(rand(0, 30) < 1)
+		{
+			Obj_SetVisible(prim, false);
+			SetInvalidRenderPriorityA1(lower, upper);
+			RenderToTextureA1(renderTarg, lower, upper, false);
+			ClearInvalidRenderPriority();
+			Obj_SetVisible(prim, true);
+		}
+		
+		if(playerDist < 50) AddScore(10);
+		
 		frame++;
 		yield;
 	}
 	
-	if(distance(centerX, centerY, GetPlayerX()+GetStgFrameLeft(), GetPlayerY()+GetStgFrameTop()) <= 50)
+	if(playerDist <= 50)
 	{
 		AddScore(1000);
-		if(GetPlayerSpell() < 1) SetPlayerSpell(clamp(GetPlayerSpell() + 0.5, 0, 1)); //refill up to one bomb charge
+		//if(GetPlayerSpell() < 1) SetPlayerSpell(clamp(GetPlayerSpell() + 0.5, 0, 1)); //refill up to one bomb charge
+		//if(GetPlayerLife() < 5) SetPlayerLife(clamp(GetPlayerLife() + 0.05, 0, 5));
 	}
 	
 	descent(i in 0..30)
