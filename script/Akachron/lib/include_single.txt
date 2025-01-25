@@ -2,5 +2,6 @@
 #include "/script/Akachron/lib/const.txt"
 #include "script/default_system/Default_Effect.txt"
 #include "/script/Akachron/lib/lib_enemy.txt"
-#include "/script/Akachron/lib/lib_bgm.txt"
+#include "/script/Akachron/lib/lib_sound.txt"
 #include "/script/Akachron/lib/lib_cutin.txt"
+#include "/script/Akachron/lib/lib_shot.txt"

@@ -34,12 +34,6 @@ const string DIR_SYSIMG 	= DIR_AKA ~ "/system/img";
 const string DIR_BACKGROUND = DIR_AKA ~ "/system/img/background";
 
 
-const string SE_SHOT       = DIR_SOUND ~ "/se_aka_shot03.wav";
-const string SE_SHOT_TWANG = DIR_SOUND ~ "/se_aka_shot02.wav";
-const string SE_SHOT_QUIET = DIR_SOUND ~ "/se_aka_shot00.wav";
-const string SE_SHOT_LOUD  = DIR_SOUND ~ "/se_aka_shot03.wav";
-
-
 
 //render priorities
 //add to these as I go

@@ -1,0 +1,67 @@
+
+task _BounceShotLRT(int shot_)
+{
+	int sx; int sy;
+	while(!Obj_IsDeleted(shot_))
+	{
+		sx = ObjMove_GetX(shot_);
+		sy = ObjMove_GetY(shot_);
+		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
+		{
+			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 90));
+			return;
+		}
+		if(sy <= 0 && ObjMove_GetSpeedY(shot_) < 0)
+		{
+			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
+			return;
+		}
+		yield;
+	}
+}
+
+task _BounceShotLR(int shot_)
+{
+	int sx;
+	while(!Obj_IsDeleted(shot_))
+	{
+		sx = ObjMove_GetX(shot_);
+		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
+		{
+			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 90));
+			return;
+		}
+		yield;
+	}
+}
+
+task _BounceShotT(int shot_)
+{
+	int sy;
+	while(!Obj_IsDeleted(shot_))
+	{
+		sy = ObjMove_GetY(shot_);
+		if(sy <= 0 && ObjMove_GetSpeedY(shot_) < 0)
+		{
+			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
+			return;
+		}
+		yield;
+	}
+}
+
+task _BounceShotTB(int shot_)
+{
+	int sy;
+	while(!Obj_IsDeleted(shot_))
+	{
+		sy = ObjMove_GetY(shot_);
+		if((sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
+		{
+			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
+			return;
+		}
+		yield;
+	}
+}
+
