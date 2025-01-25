@@ -2,7 +2,13 @@
 
 
 
-float _humes = 0.9; //unit of realness - 1.0 is "baseline", 0.9 seems a good baseline for Babel
+//unit of realness - 1.0 is "baseline", 0.8 or 0.9 seems a good baseline for Babel
+//0.1 seems a good "high but not absurd" value
+//at 0.01 lag starts happening. need to optimize a bit before using that.
+//can probably save by using the same render target and not updating it so often?
+
+float _humes = 0.8;
+
 int _numActiveEffects = 0;
 
 @Initialize
@@ -39,20 +45,28 @@ task _Main()
 
 task _DeadRegion(float thresh_)
 {	
-	string renderTarg = "RENDERTARGET_SCREENSHOT" ~ ToString(rand_int(0, 9999));
+	//string renderTarg = "RENDERTARGET_SCREENSHOT" ~ ToString(rand_int(0, 9999));
+	string renderTarg = "RENDERTARGET_SCREENSHOT";
 	CreateRenderTarget(renderTarg);
 	
 	const int lower = 20;
 	const int upper = 40;
-	const int objPri = PRI_BACKGROUND + 10;
-	const int stgOffL = 0;
-	const int stgOffT = 0;
+	const int objPri = 30;
+	const int stgOffL = GetStgFrameLeft();
+	const int stgOffT = GetStgFrameTop();
+	const int stgOffMult = 1;
+	const int areaW = GetStgFrameWidth();
+	const int areaH = GetStgFrameHeight();
 	
 	int playerDist = 999;
 	
 	SetInvalidRenderPriorityA1(lower, upper);
 	RenderToTextureA1(renderTarg, lower, upper, false);
 	ClearInvalidRenderPriority();
+	
+	//SetInvalidRenderPriorityA1(0, 1);
+	//RenderToTextureA1(renderTarg, 0, 1, false);
+	//ClearInvalidRenderPriority();
 	
 	yield;
 	
@@ -62,16 +76,11 @@ task _DeadRegion(float thresh_)
 	ObjPrim_SetTexture(prim, renderTarg);
 	Obj_SetRenderPriorityI(prim, objPri);
 	
-	float centerX = rand(0, GetScreenWidth());
-	float centerY = rand(0, GetScreenHeight());
-	while(distance(centerX, centerY, GetPlayerX()+stgOffL, GetPlayerY()+stgOffT) <= 50)
-	{
-		centerX = rand(0, GetScreenWidth());	
-		centerY = rand(0, GetScreenHeight());	
-	}
+	float centerX = rand(0, areaW);
+	float centerY = rand(0, areaH);
 	
-	float offsetX = rand(-2, 2);
-	float offsetY = rand(-2, 2);
+	float offsetX = rand(-100, 100);
+	float offsetY = rand(-100, 100);
 
 	
 	float[] xVerts = [];
@@ -84,7 +93,7 @@ task _DeadRegion(float thresh_)
 		xVerts = xVerts ~ [ centerX + r * cos(th) ];
 		yVerts = yVerts ~ [ centerY + r * sin(th) ];
 		
-		ObjPrim_SetVertexPosition(prim, i, xVerts[i] + offsetX, yVerts[i] + offsetY, 0);
+		ObjPrim_SetVertexPosition(prim, i, xVerts[i] + offsetX - stgOffL, yVerts[i] + offsetY - stgOffT, 0);
 		ObjPrim_SetVertexUVT(prim, i, xVerts[i], yVerts[i]);
 	}
 	
@@ -107,14 +116,14 @@ task _DeadRegion(float thresh_)
 		}
 		else if(rand(0, 30) < 1)
 		{
-			Obj_SetVisible(prim, false);
-			SetInvalidRenderPriorityA1(lower, upper);
-			RenderToTextureA1(renderTarg, lower, upper, false);
-			ClearInvalidRenderPriority();
-			Obj_SetVisible(prim, true);
+			//Obj_SetVisible(prim, false);
+			//SetInvalidRenderPriorityA1(lower, upper);
+			//RenderToTextureA1(renderTarg, lower, upper, false);
+			//ClearInvalidRenderPriority();
+			//Obj_SetVisible(prim, true);
 		}
 		
-		if(playerDist < 50) AddScore(10);
+		if(playerDist < 50 && rand_int(0, 10 * _numActiveEffects) ==0) AddScore(100);
 		
 		frame++;
 		yield;
@@ -135,8 +144,8 @@ task _DeadRegion(float thresh_)
 	}
 	
 	Obj_Delete(prim);
-	RemoveTexture(renderTarg);
-	ClearRenderTargetA1(renderTarg);
+	//RemoveTexture(renderTarg);
+	//ClearRenderTargetA1(renderTarg);
 	
 	wait(300); //give it some time before the threshold for creating more lowers again
 	_numActiveEffects--;

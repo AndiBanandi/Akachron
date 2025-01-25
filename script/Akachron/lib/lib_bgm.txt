@@ -88,22 +88,51 @@ const string BGM_FALLING_SKY			 	= DIR_BGM ~ "/Falling_Sky.ogg";
 
 //theoretically I could cram the whole thing into a string, i think that's what i did last time, but no
 
-func<bool> ExPlayBGM(_bgm, bool _replace)
+
+int _bgmObj = ObjSound_Create(); //TODO: create this in system script so it doesn't get deleted between singles!
+
+func<bool> ExPlayBGM(bgm_, bool replace_)
 {
-	//_replace: Whether to replace a currently playing track.
+	//replace_: Whether to replace a currently playing track.
 	//Allows each single to set a music without disrupting when used in a plural.
-	if(_replace || GetCommonData("CURRENT_BGM", "") == "")
+	if(replace_ || GetCommonData("CURRENT_BGM", "") == "")
 	{
 		//RemoveSound(current);
-		LoadSound(_bgm);
+		//LoadSound(bgm_);
+		ObjSound_Load(_bgmObj, bgm_);
 		async
 		{
 			yield; //give it a frame to make sure the background script has started
 			//because danmakufu is haunted
-			PlayBGM(_bgm, 0, 9999); //TODO: Dictionary of loop times for each track
-			SetCommonData("CURRENT_BGM", _bgm);
+			//PlayBGM(bgm_, 0, 9999); //TODO: Dictionary of loop times for each track
+			
+			ObjSound_SetVolumeRate(_bgmObj, GetCommonData("VOLUME_RATE_BGM", 50));
+			ObjSound_SetLoopEnable(_bgmObj, true);
+			ObjSound_SetSoundDivision(_bgmObj, SOUND_BGM);
+			//ObjSound_SetResumeEnable(_bgmObj, true);
+			ObjSound_Play(_bgmObj);
+			
+			SetCommonData("CURRENT_BGM", bgm_);
 		}
 		return true;
 	}
 	return false;
+}
+
+
+func<int> ExPlaySE(path_)
+{
+	int objSound = ObjSound_Create();
+	ObjSound_Load(objSound, path_);
+	ObjSound_SetVolumeRate(objSound, GetCommonData("VOLUME_RATE", 50) * 0.5);
+	ObjSound_Play(objSound);
+	return objSound;
+}
+
+func<int> ExObjSound_Create(path_)
+{
+	int objSound = ObjSound_Create();
+	ObjSound_Load(objSound, path_);
+	ObjSound_SetVolumeRate(objSound, GetCommonData("VOLUME_RATE", 50) * 0.5);
+	return objSound;
 }
