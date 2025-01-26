@@ -12,7 +12,7 @@ const string BGM_RUINED_CITY			 	= DIR_BGM ~ "/Ruined_City.ogg";
 const string BGM_INSOMNIA				 	= DIR_BGM ~ "/insomnia.ogg";
 const string BGM_ULTRA_HERO				 	= DIR_BGM ~ "/Ultra_Hero.ogg";
 const string BGM_REBOOT					 	= DIR_BGM ~ "/Reboot.ogg";
-const string BGM_RANDOM_NOISE_GENERATOR		= DIR_BGM ~ "/Random_Noise_Generator.ogg";
+const string BGM_RANDOM_NOISE_GENERATOR		= DIR_BGM ~ "/Random_Noise_Genelator.ogg";
 const string BGM_DRIFT_AWAY					= DIR_BGM ~ "/Drift_Away.ogg";
 const string BGM_DEMONS_AHEAD			 	= DIR_BGM ~ "/Demons_Ahead.ogg"; //fight or stage
 const string BGM_NOISE			 			= DIR_BGM ~ "/Noise.ogg"; //short, needs loop
@@ -130,7 +130,6 @@ func<bool> ExPlayBGM(bgmOrList_, bool replace_)
 		if(typeof(bgmOrList_) == VAR_ARRAY) //will need a different way eventually if i package loops in with it
 		{
 			bgm = bgmOrList_[rand_int(0, length(bgmOrList_)-1)];
-			RaiseMessageWindow("", bgm);
 		}
 		else
 		{
@@ -151,10 +150,30 @@ func<bool> ExPlayBGM(bgmOrList_, bool replace_)
 			
 			SetCommonData("CURRENT_BGM", bgm);
 		}
+		_DisplayBGM(bgm);
 		return true;
 	}
 	return false;
 }
+
+//Basic, but perfectly functional
+task _DisplayBGM(path_)
+{
+	string bgm = "♫ " ~ GetFileNameWithoutExtension(path_) ~ " ♫";
+	int obj = ObjText_Create();
+	ObjText_SetText(obj, bgm);
+	ObjText_SetFontSize(obj, 16);
+	Obj_SetRenderPriorityI(obj, 90);
+	ObjRender_SetPosition(obj, GetStgFrameLeft(), 0, 0);
+	wait(300);
+	descent(i in 0..60)
+	{
+		ObjRender_SetAlpha(obj, 255 * i/60);
+		yield;
+	}
+	Obj_Delete(obj);
+}
+
 
 
 
