@@ -103,7 +103,6 @@ const string[] BGMLIST_FINAL =
 //Unsorted music
 
 
-//TODO: Random option
 // GetFilePathList(path)?
 
 //string[][] _bgmList = [[]];
@@ -118,7 +117,8 @@ const string[] BGMLIST_FINAL =
 //theoretically I could cram the whole thing into a string, i think that's what i did last time, but no
 
 
-int _bgmObj = ObjSound_Create(); //TODO: create this in system script so it doesn't get deleted between singles!
+int _bgmObj = GetCommonData("OBJECT_BGM", ObjSound_Create()); //TODO: create this in system script or something
+SetCommonData("OBJECT_BGM", _bgmObj);
 
 func<bool> ExPlayBGM(bgmOrList_, bool replace_)
 {
@@ -160,11 +160,17 @@ func<bool> ExPlayBGM(bgmOrList_, bool replace_)
 task _DisplayBGM(path_)
 {
 	string bgm = "♫ " ~ GetFileNameWithoutExtension(path_) ~ " ♫";
-	int obj = ObjText_Create();
+	
+	int obj = GetCommonData("OBJECT_BGM_DISPLAY", ID_INVALID);
+	if(obj == ID_INVALID) obj = ObjText_Create();
+	SetCommonData("OBJECT_BGM_DISPLAY", obj);
+	
 	ObjText_SetText(obj, bgm);
 	ObjText_SetFontSize(obj, 16);
 	Obj_SetRenderPriorityI(obj, 90);
 	ObjRender_SetPosition(obj, GetStgFrameLeft(), 0, 0);
+	
+	string currentData = GetCommonData("CURRENT_BGM", ""); //in case another bgm starts before this fades
 	wait(300);
 	descent(i in 0..60)
 	{

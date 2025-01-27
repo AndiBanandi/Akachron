@@ -5,4 +5,3 @@
 #include "/script/Akachron/lib/lib_sound.txt"
 #include "/script/Akachron/lib/lib_cutin.txt"
 #include "/script/Akachron/lib/lib_shot.txt"
-#include "/script/Akachron/lib/lib_cleanup.txt"

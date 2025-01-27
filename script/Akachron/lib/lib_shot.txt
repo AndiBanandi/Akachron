@@ -12,152 +12,28 @@ task _HomeShot(int shot_, float maxTurn_, int target_)
 	}
 }
 
-task _BounceShotLRTB(int shot_){ _BounceShotLRTB(shot_, 99); }
-task _BounceShotLRTB(int shot_, int maxTimes_)
+
+
+task _WrapShot(int shot_){ _WrapShot(shot_, "LRTB", 1); }
+task _WrapShot(int shot_, string sides_){ _WrapShot(shot_, sides_, 99); }
+task _WrapShot(int shot_, string sides_, int maxTimes_)
 {
 	int sx; int sy;
+	bool L = contains(sides_, 'L');
+	bool R = contains(sides_, 'R');
+	bool T = contains(sides_, 'T');
+	bool B = contains(sides_, 'B');
+	
 	while(!Obj_IsDeleted(shot_))
 	{
 		sx = ObjMove_GetX(shot_);
 		sy = ObjMove_GetY(shot_);
-		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 90));
-			if(maxTimes_ <= 1) return;
-		}
-		if((sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-task _BounceShotLRT(int shot_){ _BounceShotLRT(shot_, 99); }
-task _BounceShotLRT(int shot_, int maxTimes_)
-{
-	int sx; int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sx = ObjMove_GetX(shot_);
-		sy = ObjMove_GetY(shot_);
-		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 90));
-			if(maxTimes_ <= 1) return;
-		}
-		if(sy <= 0 && ObjMove_GetSpeedY(shot_) < 0)
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-task _BounceShotLRB(int shot_){ _BounceShotLRB(shot_, 99); }
-task _BounceShotLRB(int shot_, int maxTimes_)
-{
-	int sx; int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sx = ObjMove_GetX(shot_);
-		sy = ObjMove_GetY(shot_);
-		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 90));
-			if(maxTimes_ <= 1) return;
-		}
-		if(sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0)
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-task _BounceShotLR(int shot_){ _BounceShotLR(shot_, 99); }
-task _BounceShotLR(int shot_, int maxTimes_)
-{
-	int sx;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sx = ObjMove_GetX(shot_);
-		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 90));
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-task _BounceShotT(int shot_){ _BounceShotT(shot_, 99); }
-task _BounceShotT(int shot_, int maxTimes_)
-{
-	int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sy = ObjMove_GetY(shot_);
-		if(sy <= 0 && ObjMove_GetSpeedY(shot_) < 0)
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-task _BounceShotTB(int shot_){ _BounceShotTB(shot_, 99); }
-task _BounceShotTB(int shot_, int maxTimes_)
-{
-	int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sy = ObjMove_GetY(shot_);
-		if((sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-task _BounceShotB(int shot_){ _BounceShotB(shot_, 99); }
-task _BounceShotB(int shot_, int maxTimes_)
-{
-	int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sy = ObjMove_GetY(shot_);
-		if(sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0)
-		{
-			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-
-
-task _WrapShotLRTB(int shot_){ _WrapShotLRTB(shot_, 99); }
-task _WrapShotLRTB(int shot_, int maxTimes_)
-{
-	int sx; int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sx = ObjMove_GetX(shot_);
-		sy = ObjMove_GetY(shot_);
-		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
+		if((L && sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (R && sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
 		{
 			ObjMove_SetX(shot_, ObjMove_GetX(shot_) % GetStgFrameWidth());
 			if(maxTimes_ <= 1) return;
 		}
-		if((sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
+		if((T && sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (B && sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
 		{
 			ObjMove_SetY(shot_, ObjMove_GetY(shot_) % GetStgFrameHeight());
 			if(maxTimes_ <= 1) return;
@@ -166,113 +42,36 @@ task _WrapShotLRTB(int shot_, int maxTimes_)
 	}
 }
 
-task _WrapShotLRT(int shot_){ _WrapShotLRT(shot_, 99); }
-task _WrapShotLRT(int shot_, int maxTimes_)
+task _BounceShot(int shot_){ _BounceShot(shot_, "LRTB", 99); }
+task _BounceShot(int shot_, string sides_){ _BounceShot(shot_, sides_, 99); }
+task _BounceShot(int shot_, string sides_, int maxTimes_)
 {
 	int sx; int sy;
+	bool L = contains(sides_, 'L');
+	bool R = contains(sides_, 'R');
+	bool T = contains(sides_, 'T');
+	bool B = contains(sides_, 'B');
+	
 	while(!Obj_IsDeleted(shot_))
 	{
 		sx = ObjMove_GetX(shot_);
 		sy = ObjMove_GetY(shot_);
-		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
+		if((L && sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (R && sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
 		{
-			ObjMove_SetX(shot_, ObjMove_GetX(shot_) % GetStgFrameWidth());
+			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 90));
 			if(maxTimes_ <= 1) return;
 		}
-		if(sy <= 0 && ObjMove_GetSpeedY(shot_) < 0)
+		if((T && sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (B && sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
 		{
-			ObjMove_SetY(shot_, ObjMove_GetY(shot_) % GetStgFrameHeight());
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-task _WrapShotLRB(int shot_){ _WrapShotLRB(shot_, 99); }
-task _WrapShotLRB(int shot_, int maxTimes_)
-{
-	int sx; int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sx = ObjMove_GetX(shot_);
-		sy = ObjMove_GetY(shot_);
-		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
-		{
-			ObjMove_SetX(shot_, ObjMove_GetX(shot_) % GetStgFrameWidth());
-			if(maxTimes_ <= 1) return;
-		}
-		if(sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0)
-		{
-			ObjMove_SetY(shot_, ObjMove_GetY(shot_) % GetStgFrameHeight());
+			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
 			if(maxTimes_ <= 1) return;
 		}
 		yield;
 	}
 }
 
-task _WrapShotLR(int shot_){ _WrapShotLR(shot_, 99); }
-task _WrapShotLR(int shot_, int maxTimes_)
-{
-	int sx;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sx = ObjMove_GetX(shot_);
-		if((sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
-		{
-			ObjMove_SetX(shot_, ObjMove_GetX(shot_) % GetStgFrameWidth());
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
 
-task _WrapShotTB(int shot_){ _WrapShotTB(shot_, 99); }
-task _WrapShotTB(int shot_, int maxTimes_)
-{
-	int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sy = ObjMove_GetY(shot_);
-		if((sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
-		{
-			ObjMove_SetY(shot_, ObjMove_GetY(shot_) % GetStgFrameHeight());
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
 
-task _WrapShotT(int shot_){ _WrapShotT(shot_, 99); }
-task _WrapShotT(int shot_, int maxTimes_)
-{
-	int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sy = ObjMove_GetY(shot_);
-		if(sy <= 0 && ObjMove_GetSpeedY(shot_) < 0)
-		{
-			ObjMove_SetY(shot_, ObjMove_GetY(shot_) % GetStgFrameHeight());
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
-
-task _WrapShotB(int shot_){ _WrapShotB(shot_, 99); }
-task _WrapShotB(int shot_, int maxTimes_)
-{
-	int sy;
-	while(!Obj_IsDeleted(shot_))
-	{
-		sy = ObjMove_GetY(shot_);
-		if(sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0)
-		{
-			ObjMove_SetY(shot_, ObjMove_GetY(shot_) % GetStgFrameHeight());
-			if(maxTimes_ <= 1) return;
-		}
-		yield;
-	}
-}
 
 
 //Make shot (or other object) only visible when player gets near

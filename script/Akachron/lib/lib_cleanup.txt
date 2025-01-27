@@ -1,0 +1,15 @@
+function StandardizedCleanup()
+{
+	SetCommonData("HUME_LEVEL", 0.9);
+	SetCommonData("BACKGROUND_BRIGHTNESS", 100);
+	DeleteShotAll(TYPE_ALL, TYPE_IMMEDIATE);
+	//Until the currently running script is ended, or after long enough that it really should have
+	async
+	{
+		loop(300)
+		{
+			DeleteShotAll(TYPE_ALL, TYPE_IMMEDIATE);
+			yield;
+		}
+	}
+}
