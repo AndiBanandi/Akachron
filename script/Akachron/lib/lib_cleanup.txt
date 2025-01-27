@@ -1,7 +1,10 @@
 function StandardizedCleanup()
 {
+	SetShotAutoDeleteClip(64,64,64,64);
 	SetCommonData("HUME_LEVEL", 0.9);
 	SetCommonData("BACKGROUND_BRIGHTNESS", 100);
+	SetCommonData("BACKGROUND_COLOR", [255, 255, 255]);
+	
 	DeleteShotAll(TYPE_ALL, TYPE_IMMEDIATE);
 	//Until the currently running script is ended, or after long enough that it really should have
 	async

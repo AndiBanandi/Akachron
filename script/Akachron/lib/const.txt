@@ -26,6 +26,7 @@ const string DIR_AKACHRON = DIR_AKA;
 
 const string DIR_LIB 		= DIR_AKA ~ "/lib";
 const string DIR_IMAGE 		= DIR_AKA ~ "/img";
+const string DIR_EFFECT		= DIR_AKA ~ "/img/effect";
 const string DIR_BGM 		= DIR_AKA ~ "/bgm";
 const string DIR_SOUND 		= DIR_AKA ~ "/sound";
 const string DIR_SHOT 		= DIR_AKA ~ "/shot";
@@ -42,6 +43,7 @@ const string DIR_BACKGROUND = DIR_AKA ~ "/system/img/background";
 const int PRI_BACKGROUND = 21;
 const int PRI_SHOT = 50;
 const int PRI_DEFAULT = 50;
+const int PRI_ENEMY = 40;
 const int PRI_STAGE_LOWER = 20;
 const int PRI_STAGE_UPPER = 80;
 

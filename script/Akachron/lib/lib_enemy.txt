@@ -1,4 +1,4 @@
-function CreateGenericAkashicDemon(_isBoss)
+function CreateGenericAkashicDemon(let _isBoss)
 {
 	let enemyType;
 	if(typeof(_isBoss) == VAR_BOOL) enemyType = _isBoss ? OBJ_ENEMY_BOSS : OBJ_ENEMY;
@@ -6,24 +6,40 @@ function CreateGenericAkashicDemon(_isBoss)
 	let objEnemy = ObjEnemy_Create(enemyType);
 	ObjEnemy_Regist(objEnemy);
 	
-	let imgDemon = GetCurrentScriptDirectory~"../img/GenericAkashicDemon.png";
+	Obj_SetRenderPriorityI(objEnemy, PRI_ENEMY);
+	
+	let imgDemon = DIR_IMAGE ~ "/GenericAkashicDemon.png";
 	ObjPrim_SetTexture(objEnemy, imgDemon);
 	ObjSprite2D_SetSourceRect(objEnemy, 0, 0, 63, 63);
 	ObjSprite2D_SetDestCenter(objEnemy);
+	
+	ObjEnemy_SetLife(objEnemy, 300);
+	if(enemyType == OBJ_ENEMY) ObjEnemy_SetDamageRate(objEnemy, 1.0, 1.0);
+	else ObjEnemy_SetDamageRate(objEnemy, 0.1, 0.1);
 	
 	async
 	{
 		int count = rand(0, 2047);
 		//yield; //give time to set anything manual the loop will need to take into account
 		
-		while(!Obj_IsDeleted(objEnemy))
+		while(!Obj_IsDeleted(objEnemy) && ObjEnemy_GetInfo(objEnemy, INFO_LIFE) > 0)
 		{
 			count += rand(-2,4); //jittery movement that makes it slightly unsettling
 			ObjRender_SetAngleZ(objEnemy, count*15);
 			ObjRender_SetScaleXYZ(objEnemy, 1 + 0.1 * sin(count*30), 1 - 0.1 * cos(count*32), 1);
 			
+			ObjEnemy_SetIntersectionCircleToShot(objEnemy,   ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 32);
+			ObjEnemy_SetIntersectionCircleToPlayer(objEnemy, ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 24);
+			
 			yield;
 		}
+		//TODO: Little explosion effect if they died
+		if(!Obj_IsDeleted(objEnemy))
+		{
+			_EffectEnemyBurst(ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy));
+			ExPlaySE(SE_SHOT_QUIET); //because i don't currently have any sound effects other than shot
+		}
+		Obj_Delete(objEnemy);
 	}
 	return objEnemy;
 }

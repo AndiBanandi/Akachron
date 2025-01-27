@@ -52,6 +52,8 @@ const string BGM_INTRUDER				 	= DIR_BGM ~ "/Intruder.ogg";
 const string BGM_ARTIFICIAL_GAMES		 	= DIR_BGM ~ "/Artificial_Games.ogg";
 
 
+
+
 //Upbeat music
 const string BGM_SCRAMBLE_LINE 				= DIR_BGM ~ "/Scramble_Line.ogg";
 const string BGM_PASSION_BULLET			 	= DIR_BGM ~ "/Passion_bullet.ogg";
@@ -90,6 +92,14 @@ const string[] BGMLIST_DEMON =
 	BGM_SOUND_WAVE, BGM_8_BATTLE_ROCK
 ];
 
+const string[] BGMLIST_STAGE =
+[
+	BGM_ENTER_NEW_WORLD, BGM_CHAIN_DATURA, BGM_METEORITE, BGM_SCRAP_WORLD, BGM_DEAD_PARTY, BGM_DELUSION,
+	BGM_SHADES_OF_THE_PAST, BGM_SENSE_OF_MISSION, BGM_TECH_CUBE, BGM_GRAVIS_GRADUS, BGM_RADAR, BGM_AWAKEN,
+	BGM_ABSTRACT, BGM_GREEN_FLAME, BGM_NEGATION_BEAT, BGM_FREAK_OF_LIGHT, BGM_NIGHT_CITY_SAFARI,
+	BGM_BOUND_BOX, BGM_DARKER_TIMES, BGM_HADES, BGM_MALICE, BGM_INTRUDER, BGM_ARTIFICIAL_GAMES
+];
+
 const string[] BGMLIST_EPIC =
 [
 	BGM_THE_FINAL_ARTS, BGM_SCENE_PRISONER, BGM_PHOENIX, BGM_DUGEON, BGM_A_BLACK_SPHERE, BGM_ULTRA_HERO
@@ -117,15 +127,20 @@ const string[] BGMLIST_FINAL =
 //theoretically I could cram the whole thing into a string, i think that's what i did last time, but no
 
 
-int _bgmObj = GetCommonData("OBJECT_BGM", ObjSound_Create()); //TODO: create this in system script or something
-SetCommonData("OBJECT_BGM", _bgmObj);
+//int _bgmObj = GetCommonData("OBJECT_BGM", ObjSound_Create()); //TODO: create this in system script or something
+//SetCommonData("OBJECT_BGM", _bgmObj);
 
 func<bool> ExPlayBGM(bgmOrList_, bool replace_)
 {
+	int _bgmObj = GetCommonData("OBJECT_BGM", ObjSound_Create());
+	SetCommonData("OBJECT_BGM", _bgmObj);
+	
 	//replace_: Whether to replace a currently playing track.
 	//Allows each single to set a music without disrupting when used in a plural.
 	if(replace_ || GetCommonData("CURRENT_BGM", "") == "")
 	{
+		ObjSound_Stop(_bgmObj);
+		
 		string bgm;
 		if(typeof(bgmOrList_) == VAR_ARRAY) //will need a different way eventually if i package loops in with it
 		{
