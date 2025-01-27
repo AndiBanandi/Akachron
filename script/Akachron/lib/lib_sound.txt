@@ -153,7 +153,7 @@ func<bool> ExPlayBGM(bgmOrList_, bool replace_)
 		ObjSound_Load(_bgmObj, bgm);
 		async
 		{
-			yield; //give it a frame to make sure the background script has started
+			//yield; //give it a frame to make sure the background script has started
 			//because danmakufu is haunted
 			
 			ObjSound_SetVolumeRate(_bgmObj, GetCommonData("VOLUME_RATE_BGM", 50));
@@ -177,22 +177,32 @@ task _DisplayBGM(path_)
 	string bgm = "♫ " ~ GetFileNameWithoutExtension(path_) ~ " ♫";
 	
 	int obj = GetCommonData("OBJECT_BGM_DISPLAY", ID_INVALID);
-	if(obj == ID_INVALID) obj = ObjText_Create();
+	if(obj == ID_INVALID || Obj_IsDeleted(obj)) obj = ObjText_Create();
 	SetCommonData("OBJECT_BGM_DISPLAY", obj);
+	Obj_SetVisible(obj, true);
+	
+	obj = ObjText_Create();
 	
 	ObjText_SetText(obj, bgm);
 	ObjText_SetFontSize(obj, 16);
 	Obj_SetRenderPriorityI(obj, 90);
 	ObjRender_SetPosition(obj, GetStgFrameLeft(), 0, 0);
 	
-	string currentData = GetCommonData("CURRENT_BGM", ""); //in case another bgm starts before this fades
-	wait(300);
+	string currentData = path_;
+	SetCommonData("CURRENT_BGM", path_); //in case another bgm starts before this fades
+	loop(300)
+	{
+		if(GetCommonData("CURRENT_BGM", "") != currentData) return;
+		yield;
+	}
 	descent(i in 0..60)
 	{
+		if(GetCommonData("CURRENT_BGM", "") != currentData) return;
 		ObjRender_SetAlpha(obj, 255 * i/60);
 		yield;
 	}
-	Obj_Delete(obj);
+	Obj_SetVisible(obj, false);
+	//Obj_Delete(obj);
 }
 
 

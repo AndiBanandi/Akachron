@@ -108,7 +108,7 @@ task _DeadRegion(float thresh_)
 	//&& playerDist > 50
 	)
 	{
-		playerDist = distance(centerX, centerY, GetPlayerX()+stgOffL, GetPlayerY()+stgOffT);
+		//playerDist = distance(centerX, centerY, GetPlayerX()+stgOffL, GetPlayerY()+stgOffT);
 		if(rand(0,1000) < frame)
 		{
 			ObjRender_SetPosition(prim, rand(-1, 1), rand(-1, 1), 0);
@@ -123,18 +123,18 @@ task _DeadRegion(float thresh_)
 			//Obj_SetVisible(prim, true);
 		}
 		
-		if(playerDist < 50 && rand_int(0, 10 * _numActiveEffects) ==0) AddScore(100);
+		//if(playerDist < 50 && rand_int(0, 10 * _numActiveEffects) ==0) AddScore(100);
 		
 		frame++;
 		yield;
 	}
 	
-	if(playerDist <= 50)
-	{
-		AddScore(1000);
-		//if(GetPlayerSpell() < 1) SetPlayerSpell(clamp(GetPlayerSpell() + 0.5, 0, 1)); //refill up to one bomb charge
-		//if(GetPlayerLife() < 5) SetPlayerLife(clamp(GetPlayerLife() + 0.05, 0, 5));
-	}
+	//if(playerDist <= 50)
+	//{
+	//	AddScore(1000);
+	//	//if(GetPlayerSpell() < 1) SetPlayerSpell(clamp(GetPlayerSpell() + 0.5, 0, 1)); //refill up to one bomb charge
+	//	//if(GetPlayerLife() < 5) SetPlayerLife(clamp(GetPlayerLife() + 0.05, 0, 5));
+	//}
 	
 	descent(i in 0..30)
 	{
