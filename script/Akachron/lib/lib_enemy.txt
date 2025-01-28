@@ -38,6 +38,7 @@ function CreateGenericAkashicDemon(let _isBoss)
 		{
 			_EffectEnemyBurst(ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy));
 			ExPlaySE(SE_SHOT_QUIET); //because i don't currently have any sound effects other than shot
+			AddScore(1000);
 		}
 		Obj_Delete(objEnemy);
 	}

@@ -49,5 +49,6 @@ const int PRI_STAGE_UPPER = 80;
 
 const int PRI_PLAYER_EFFECT = 60;
 const int PRI_PLAYER_SPRITE = 45;
+const int PRI_PLAYER_SHOT = 45;
 
 //const int PRI_SYSTEM_BACKGROUND = 20;
