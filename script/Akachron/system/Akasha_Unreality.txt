@@ -49,7 +49,7 @@ task _DeadRegion(float thresh_)
 	string renderTarg = "RENDERTARGET_SCREENSHOT";
 	CreateRenderTarget(renderTarg);
 	
-	const int lower = 20;
+	const int lower = 22;
 	const int upper = 40;
 	const int objPri = 30;
 	const int stgOffL = GetStgFrameLeft();
@@ -63,10 +63,6 @@ task _DeadRegion(float thresh_)
 	SetInvalidRenderPriorityA1(lower, upper);
 	RenderToTextureA1(renderTarg, lower, upper, false);
 	ClearInvalidRenderPriority();
-	
-	//SetInvalidRenderPriorityA1(0, 1);
-	//RenderToTextureA1(renderTarg, 0, 1, false);
-	//ClearInvalidRenderPriority();
 	
 	yield;
 	
@@ -128,13 +124,6 @@ task _DeadRegion(float thresh_)
 		frame++;
 		yield;
 	}
-	
-	//if(playerDist <= 50)
-	//{
-	//	AddScore(1000);
-	//	//if(GetPlayerSpell() < 1) SetPlayerSpell(clamp(GetPlayerSpell() + 0.5, 0, 1)); //refill up to one bomb charge
-	//	//if(GetPlayerLife() < 5) SetPlayerLife(clamp(GetPlayerLife() + 0.05, 0, 5));
-	//}
 	
 	descent(i in 0..30)
 	{
