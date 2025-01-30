@@ -77,6 +77,16 @@ task _DeadRegion(float thresh_)
 	
 	float offsetX = rand(-100, 100);
 	float offsetY = rand(-100, 100);
+	
+	if(rand_int(0, 3) == 0)
+	{
+		ObjRender_SetBlendType(prim, BLEND_INV_DESTRGB);
+		//Obj_SetRenderPriorityI(prim, 70);
+	}
+	else if(rand_int(0, 2) == 0)
+	{
+		ObjRender_SetBlendType(prim, BLEND_MULTIPLY);
+	}
 
 	
 	float[] xVerts = [];

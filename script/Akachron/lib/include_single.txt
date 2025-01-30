@@ -1,5 +1,6 @@
 #include "/script/Akachron/shot/Akasha_ShotConst.txt"
 #include "/script/Akachron/lib/const.txt"
+#include "/script/Akachron/lib/lib_image.txt"
 #include "/script/Akachron/lib/lib_effect.txt"
 #include "/script/Akachron/lib/lib_sound.txt"
 #include "/script/Akachron/lib/lib_cutin.txt"

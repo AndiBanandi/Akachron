@@ -1,0 +1,21 @@
+#include "/script/Akachron/lib/const.txt"
+
+func<int> Create2DSprite(string path_){ return Create2DSprite(path_, 0, 0, GetTextureWidth(path_), GetTextureHeight(path_)); }
+func<int> Create2DSprite(string path_, int[] src){ return Create2DSprite(path_, src[0], src[1], src[2], src[3]); }
+func<int> Create2DSprite(string path_, int srcX0_, int srcY0_, int srcX1_, int srcY1_)
+{
+	let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+	ObjPrim_SetTexture(obj, path_);
+	ObjSprite2D_SetSourceRect(obj, srcX0_, srcY0_, srcX1_, srcY1_);
+	ObjSprite2D_SetDestCenter(obj);
+	Obj_SetRenderPriorityI(obj, PRI_DEFAULT);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	return obj;
+}
+func<int> Create2DSprite(string path_, int[] src_, int[] dest_)
+{
+	int obj = Create2DSprite(path_, src_);
+	ObjSprite2D_SetDestRect(obj, dest_[0], dest_[1], dest_[2], dest_[3]);
+	return obj;
+}
+
