@@ -47,17 +47,40 @@ function CreateGenericAkashicDemon(let _isBoss)
 	}
 	return objEnemy;
 }
+
 function CreateGenericBabelDemon(){
-	int obj = CreateGenericAkashicDemon(OBJ_ENEMY);
-	Obj_SetValue(obj, "DO_SCALE", false);
+	//int obj = CreateGenericAkashicDemon(OBJ_ENEMY);
+	int obj = CreateEnemy(OBJ_ENEMY);
+	ObjRender_SetScaleXYZ(obj, 0.75, 0.75, 1);
+	_FiddleWithDemon(obj, true);
+	//Obj_SetValue(obj, "DO_SCALE", false);
 	return obj;
+}
+
+
+func _FiddleWithDemon(int objEnemy_){ _FiddleWithDemon(objEnemy_, true); }
+task _FiddleWithDemon(int objEnemy_, bool doScale_)
+{
+	int count = rand(0, 2047);
+	bool doScale = Obj_GetValueD(objEnemy_, "DO_SCALE", true);
+	float baseScaleX = ObjRender_GetScaleX(objEnemy_);
+	float baseScaleY = ObjRender_GetScaleY(objEnemy_);
+	
+	while(!Obj_IsDeleted(objEnemy_) && ObjEnemy_GetInfo(objEnemy_, INFO_LIFE) > 0)
+	{
+		count += rand(-2,4); //jittery movement that makes it slightly unsettling
+		ObjRender_SetAngleZ(objEnemy_, count*15);
+		if(doScale) ObjRender_SetScaleXYZ(objEnemy_, baseScaleX + 0.1 * sin(count*30), baseScaleY - 0.1 * cos(count*32), 1);
+		yield;
+	}
 }
 
 
 
 //Adaptable to whatever the needs are
-function CreateEnemy(){ return CreateEnemy(OBJ_ENEMY); }
-function CreateEnemy(let type_)
+function CreateEnemy(){ return CreateEnemy(OBJ_ENEMY, true); }
+function CreateEnemy(let type_){ return CreateEnemy(type_, true); }
+function CreateEnemy(let type_, bool doIntersection_)
 {
 	int objEnemy = ObjEnemy_Create(type_);
 	ObjEnemy_Regist(objEnemy);
@@ -74,8 +97,12 @@ function CreateEnemy(let type_)
 	{
 		while(!Obj_IsDeleted(objEnemy) && ObjEnemy_GetInfo(objEnemy, INFO_LIFE) > 0)
 		{
-			ObjEnemy_SetIntersectionCircleToShot(objEnemy,   ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 32);
-			ObjEnemy_SetIntersectionCircleToPlayer(objEnemy, ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 24);
+			if(doIntersection_)
+			{
+				float scale = (ObjRender_GetScaleX(objEnemy) + ObjRender_GetScaleY(objEnemy)) / 2;
+				ObjEnemy_SetIntersectionCircleToShot(objEnemy,   ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 32 * scale);
+				ObjEnemy_SetIntersectionCircleToPlayer(objEnemy, ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 24 * scale);
+			}
 			yield;
 		}
 		if(!Obj_IsDeleted(objEnemy))
@@ -95,12 +122,19 @@ function CreateEnemy(let type_)
 func<int[]> CreateDemonCloud(int enemyType_)
 {
 	int actualEnemyObj = CreateEnemy(enemyType_);
+	
 	Obj_SetVisible(actualEnemyObj, false);
 	int[] fakes = [];
-	ascent(i in 0..5)
+	float[] thetas = [];
+	float[] radii  = [];
+	float[] plungeMults = [];
+	ascent(i in 0..15)
 	{
 		int obj = Create2DSprite(DIR_IMAGE ~ "/GenericAkashicDemon.png", 0, 0, 63, 63);
 		fakes = fakes ~ [obj];
+		thetas = thetas ~ [rand(0, 360)];
+		radii = radii ~ [rand(5, 75)];
+		plungeMults  = plungeMults ~ [rand(0, 3)];
 	}
 	async
 	{
@@ -109,10 +143,18 @@ func<int[]> CreateDemonCloud(int enemyType_)
 		{
 			float ex = ObjRender_GetX(actualEnemyObj);
 			float ey = ObjRender_GetY(actualEnemyObj);
+
+			ObjEnemy_SetIntersectionCircleToShot(  actualEnemyObj, ex, ey, 64);
+			ObjEnemy_SetIntersectionCircleToPlayer(actualEnemyObj, ex, ey, 48);
+			
 			for each(i, fake in fakes)
 			{
-				float r = (50 - sqrt(i+1) * 15) * sin(count * sqrt(i + 1)) + rand(-5, 5);
-				float th = 45 * i + 360 * sin(count * 1.7 * sqrt(i + 1)) + rand(-5, 5);
+				//float r = (50 - sqrt(i+1) * 15) * sin(count * sqrt(i + 1)) + rand(-5, 5) + 10 * i;
+				//float th = 45 * i + 360 * sin(count * 1.7 * sqrt(i + 1)) + rand(-5, 5);
+				thetas[i] = thetas[i] + rand(0, 5) * (-1.0f)^i;
+				float r  = radii[i] * cos(count * plungeMults[i]);
+				float th = thetas[i];
+				
 				ObjRender_SetPosition(fake, ex + r * cos(th), ey + r * sin(th), 0);
 				ObjRender_SetAngleZ(fake, count * i + rand(-20, 20));
 			}

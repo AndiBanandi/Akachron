@@ -83,3 +83,4 @@ task _HideObjAtRange(int shot_, float range_)
 		yield;
 	}
 }
+
