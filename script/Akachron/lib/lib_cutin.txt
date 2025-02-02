@@ -1,39 +1,5 @@
-func<int> CreateCutin(string title_){ return CreateCutin(title_, []); }
-func<int> CreateCutin(string title_, string[][] extraTextsOrParams_)
+func<int> CreateCutin(string title_)
 {
-	string[] extraTexts = [];
-	string[][] extraParams = [];
-	if(length(extraTextsOrParams_) > 0)
-	{
-		if(typeof(extraTextsOrParams_[0]) == VAR_ARRAY)
-		{
-			extraParams = extraTextsOrParams_;
-			for each(params in extraTextsOrParams_){ extraTexts = extraTexts ~ [ params[0] ]; }
-		}
-		else
-		{
-			extraTexts = extraTextsOrParams_;
-			for each(text in extraTextsOrParams_){ extraParams = extraParams ~ [ [ text ] ]; }
-		}
-	}
-	int[] extraTextObjs = [];
-	for each(textParams in extraParams)
-	{
-		string text = textParams[0];
-		int obj = ObjText_Create();
-		ObjText_SetText(obj, text);	
-		ObjText_SetFontSize(obj, 12);
-		ObjText_SetFontColorTop(obj, 255, 255, 0);
-		ObjText_SetFontColorBottom(obj, 255, 64, 0);
-		ObjText_SetFontBorderType(obj, BORDER_FULL);
-		ObjText_SetFontBorderWidth(obj, 2);
-		ObjText_SetFontBorderColor(obj, 64, 0, 64);
-		ObjText_SetHorizontalAlignment(obj, ALIGNMENT_CENTER);
-		ObjRender_SetAlpha(obj, 128);
-		
-		extraTextObjs = extraTextObjs ~ [ obj ];
-	}
-
 	int objText = ObjText_Create();
 	ObjText_SetText(objText, title_);	
 	ObjText_SetFontSize(objText, 16);
@@ -45,12 +11,9 @@ func<int> CreateCutin(string title_, string[][] extraTextsOrParams_)
 	ObjText_SetFontBorderColor(objText, 64, 0, 64);
 	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
 	
-	
-	
 	float x1 = GetStgFrameWidth() - 10;
 	float y0 = GetStgFrameHeight() * 4 / 6;
 	
-	//The motion of the main cutin text
 	async
 	{
 		ascent(i in 0..30)
@@ -68,68 +31,36 @@ func<int> CreateCutin(string title_, string[][] extraTextsOrParams_)
 		}
 	}
 	
-	//This shit is all for the extra texts that float around near the main one
-	async
-	{
-		float count = 0;
-		int numExtras = length(extraTextObjs);
-		float tx, ty, th0;
-		float[] r = [], th = [], dx = [], dy = [];
-		r  = resize(  r, numExtras, 0);
-		th = resize( th, numExtras, 0);
-		dx = resize( dx, numExtras, 0);
-		dy = resize( dy, numExtras, 0);
-		
-		
-		ascent(i in 0..length(extraParams))
-		{
-			r[i]  = 30;
-			th[i] = 90 + i * 360 / numExtras;
-			dx[i] = 0;
-			dy[i] = 0;
-		}
-		for each(i, string[] paramsStringList in extraParams)
-		{
-			for each(k, string paramsString in paramsStringList)
-			{
-				string[] params = SplitString2(paramsString, "=");
-				if(length(params) > 1)
-				{
-					alternative(params[0])
-					case("th")      th[i] = as_float(params[1]);
-					case("r")        r[i] = as_float(params[1]);
-					case("dx", "x") dx[i] = as_float(params[1]);
-					case("dy", "y") dy[i] = as_float(params[1]);
-				}
-			}
-		}
-		
-		
-		
-		while(!Obj_IsDeleted(objText))
-		{
-			tx = ObjRender_GetX(objText) - ObjText_GetTotalWidth(objText)/2;
-			ty = ObjRender_GetY(objText);
-			
-			float xf = tx;
-			float yf = ty;
-			
-			ascent(i in 0..length(extraTextObjs))
-			{
-				int obj = extraTextObjs[i];
-				xf = tx + r[i] * cos(th[i]);
-				yf = ty + r[i] * sin(th[i]);
-				if(dx[i] != 0) xf = tx + dx[i];
-				if(dy[i] != 0) yf = ty + dy[i];
-				ObjRender_SetPosition(obj, xf, yf, 0);
-			}
-			yield;
-		}
-		for each(obj in extraTextObjs){ Obj_Delete(obj); }
-	}
-	
 	return objText;
 }
+
+func<int> CreateCutinExtra(int parent_, string text_, float dx_, float dy_)
+{
+	int obj = ObjText_Create();
+	ObjText_SetText(obj, text_);	
+	ObjText_SetFontSize(obj, 12);
+	ObjText_SetFontColorTop(obj, 255, 255, 0);
+	ObjText_SetFontColorBottom(obj, 255, 64, 0);
+	ObjText_SetFontBorderType(obj, BORDER_FULL);
+	ObjText_SetFontBorderWidth(obj, 2);
+	ObjText_SetFontBorderColor(obj, 64, 0, 64);
+	ObjText_SetHorizontalAlignment(obj, ALIGNMENT_CENTER);
+	ObjRender_SetAlpha(obj, 128);
+	
+	async
+	{
+		while(!Obj_IsDeleted(obj) && !Obj_IsDeleted(parent_))
+		{
+			ObjRender_SetPosition(obj, ObjRender_GetX(parent_) - ObjText_GetTotalWidth(parent_)/2 + dx_, ObjRender_GetY(parent_) + dy_, 0);
+			yield;
+		}
+		Obj_Delete(obj);
+	}
+	
+	return obj;
+}
+
+
 
 
 func<int> BindCreateCutin(string title_, int objBound_)
