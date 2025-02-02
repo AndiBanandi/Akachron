@@ -23,6 +23,8 @@ const string BGM_BERSERKER				 	= DIR_BGM ~ "/Berserker.ogg";
 const string BGM_NAMELESS_EMOTIONS		 	= DIR_BGM ~ "/Nameless_Emotions.ogg";
 const string BGM_SOUND_WAVE				 	= DIR_BGM ~ "/Sound_Wave.ogg"; //demon/upbeat
 const string BGM_8_BATTLE_ROCK			 	= DIR_BGM ~ "/BGM008_-_戦闘2_-_ロック.ogg";
+const string BGM_INDUSTRIAL_FACT			= DIR_BGM ~ "/Industrial_Fact.ogg";
+
 
 
 
@@ -89,7 +91,7 @@ const string[] BGMLIST_DEMON =
 	BGM_TERMINAL_FANTOM, BGM_TAIKO_SOLDIER, BGM_STEEL_KING, BGM_RUINED_CITY, BGM_INSOMNIA,
 	BGM_REBOOT, BGM_RANDOM_NOISE_GENERATOR, BGM_DRIFT_AWAY, BGM_DEMONS_AHEAD, BGM_NOISE,
 	BGM_DEATH_BORG, BGM_PRODIGYS_THOUGHT, BGM_CYBER_ATTACK, BGM_BERSERKER, BGM_NAMELESS_EMOTIONS,
-	BGM_SOUND_WAVE, BGM_8_BATTLE_ROCK
+	BGM_SOUND_WAVE, BGM_8_BATTLE_ROCK, BGM_INDUSTRIAL_FACT
 ];
 
 const string[] BGMLIST_STAGE =
@@ -115,16 +117,18 @@ const string[] BGMLIST_FINAL =
 
 // GetFilePathList(path)?
 
-//string[][] _bgmList = [[]];
-//2d array containing: [ [key, filepath, loopstart, loopend ] ]
-//will need to store the loop start and end as strings and cast to float on retrieval
-//key and filepath might be the same for the moment, but storing them separately could allow a more efficient key later
-//also, it's possible that using an integer or float key, the filepath could be stored separately in an object dictionary...
 
-//alternatively, the constants could be reworked as string[] [path, title, start, end]... this may be advisable
-//yes, that's what I'll do. from there, they can be easily put into arrays for the random option, as well.
+//Track list for chapter 1:
+//Stage 1:
+//Boss 1: Industrial Fact
+//Stage 2:
+//Boss 2:
+//Stage 2:
+//Boss 3: Villain.ogg?
 
-//theoretically I could cram the whole thing into a string, i think that's what i did last time, but no
+
+//TODO: rework constants as string[] [path, title, start, end, volumeMult]...
+
 
 
 //int _bgmObj = GetCommonData("OBJECT_BGM", ObjSound_Create()); //TODO: create this in system script or something

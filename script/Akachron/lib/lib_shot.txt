@@ -12,6 +12,40 @@ task _HomeShot(int shot_, float maxTurn_, int target_)
 	}
 }
 
+task _HomeShotB(int shot_, float maxTurn_, float maxSpeed_, int target_)
+{
+	float vx; float vy;
+	float sx; float sy;
+	float tx; float ty;
+	float dx; float dy;
+	float th; float dvx; float dvy;
+	float thTravel;
+	while(!Obj_IsDeleted(shot_) && !Obj_IsDeleted(target_))
+	{
+		vx = ObjMove_GetSpeedX(shot_);
+		vy = ObjMove_GetSpeedY(shot_);
+		sx = ObjMove_GetX(shot_);
+		sy = ObjMove_GetY(shot_);
+		tx = ObjMove_GetX(target_);
+		ty = ObjMove_GetY(target_);
+		dx = sx - tx;
+		dy = sy - ty;
+		th = dottheta(sx, sy, tx, ty);
+		dvx = maxTurn_ * cos(th);
+		dvy = maxTurn_ * sin(th);
+		vx += dvx;
+		vy += dvy;
+		
+		thTravel = dottheta(0, 0, vx, vy);
+		vx = clamp(vx, -(|maxSpeed_ * cos(thTravel)|), (|maxSpeed_ * cos(thTravel)|));
+		vy = clamp(vy, -(|maxSpeed_ * sin(thTravel)|), (|maxSpeed_ * sin(thTravel)|));
+		ObjMove_SetSpeedX(shot_, clamp(vx, -maxSpeed_, maxSpeed_));
+		ObjMove_SetSpeedY(shot_, clamp(vy, -maxSpeed_, maxSpeed_));
+		
+		yield;
+	}
+}
+
 
 
 task _WrapShot(int shot_){ _WrapShot(shot_, "LRTB", 1); }

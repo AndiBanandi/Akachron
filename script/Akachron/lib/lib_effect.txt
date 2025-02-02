@@ -28,3 +28,34 @@ task TExplosionA(x, y, dAlpha, dScale)
 	Obj_Delete(obj);
 }
 
+function EffectExplode(float x, float y){ EffectExplode(x, y, 15, 0.1, 255, 255, 255); }
+function EffectExplode(float x, float y, dAlpha, dScale){ EffectExplode(x, y, 15, 0.1, 255, 255, 255); }
+function EffectExplode(float x, float y, dAlpha, dScale, float r, float g, float b)
+{
+	let path = DIR_EFFECT ~ "/Default_Effect.png";
+	let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+	ObjPrim_SetTexture(obj, path);
+	Obj_SetRenderPriority(obj, 0.65);
+	ObjRender_SetBlendType(obj, BLEND_ADD_RGB);
+	ObjSprite2D_SetSourceRect(obj, 1, 1, 63, 63);
+	ObjSprite2D_SetDestCenter(obj);
+	ObjRender_SetPosition(obj, x, y, 0);
+	
+	async
+	{
+		float scale = 0;
+		float alpha = 255;
+		while(alpha > 0)
+		{
+			ObjRender_SetColor(obj, alpha * r/255, alpha * g/255, alpha * b/255);
+			ObjRender_SetScaleXYZ(obj, scale, scale, 1);
+
+			scale += dScale;
+			alpha -= dAlpha;
+			yield;
+		}
+		Obj_Delete(obj);
+	}
+	return obj;
+}
+
