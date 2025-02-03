@@ -34,6 +34,26 @@ func<int> CreateCutin(string title_)
 	return objText;
 }
 
+func<int> CreateCutin(string title_, int parent_)
+{
+	int objCutin = CreateCutin(title_);
+	async
+	{
+		while(!Obj_IsDeleted(parent_)) yield;
+		Obj_Delete(objCutin);
+	}
+	return objCutin;
+}
+func<void> BindCutin(objCutin_, objParent_)
+{
+	async
+	{
+		while(!Obj_IsDeleted(objParent_)) yield;
+		Obj_Delete(objCutin_);
+	}
+}
+func<int> BindCreateCutin(string title_, int parent_){ return CreateCutin(title_, parent_); } //legacy
+
 func<int> CreateCutinExtra(int parent_, string text_, float dx_, float dy_)
 {
 	int obj = ObjText_Create();
@@ -47,11 +67,32 @@ func<int> CreateCutinExtra(int parent_, string text_, float dx_, float dy_)
 	ObjText_SetHorizontalAlignment(obj, ALIGNMENT_CENTER);
 	ObjRender_SetAlpha(obj, 128);
 	
+	float parentX = ObjRender_GetX(parent_);
+	float parentY = ObjRender_GetY(parent_);
+	float prevParentX = -999;
+	float prevParentY = -999;
+	
+	float dxOffset = -ObjText_GetTotalWidth(parent_)/2;
+	
 	async
 	{
 		while(!Obj_IsDeleted(obj) && !Obj_IsDeleted(parent_))
 		{
-			ObjRender_SetPosition(obj, ObjRender_GetX(parent_) - ObjText_GetTotalWidth(parent_)/2 + dx_, ObjRender_GetY(parent_) + dy_, 0);
+			parentX = ObjRender_GetX(parent_) + dxOffset;
+			parentY = ObjRender_GetY(parent_);
+			if(parentX != prevParentX || parentY != prevParentY)
+			{
+				ObjRender_SetPosition(obj, parentX + dx_, parentY + dy_, 0);
+			}
+			else
+			{
+				//Allow for moving the object around by external means while main cutin is still
+				//and keeping the relative position if it then moves again
+				dx_ = ObjRender_GetX(obj) - parentX;
+				dy_ = ObjRender_GetY(obj) - parentY;
+			}
+			prevParentX	= parentX;
+			prevParentY	= parentY;
 			yield;
 		}
 		Obj_Delete(obj);
@@ -63,22 +104,4 @@ func<int> CreateCutinExtra(int parent_, string text_, float dx_, float dy_)
 
 
 
-func<int> BindCreateCutin(string title_, int objBound_)
-{
-	int objCutin = CreateCutin(title_);
-	async
-	{
-		while(!Obj_IsDeleted(objBound_)) yield;
-		Obj_Delete(objCutin);
-	}
-	return objCutin;
-}
 
-func<void> BindCutin(objCutin_, objParent_)
-{
-	async
-	{
-		while(!Obj_IsDeleted(objParent_)) yield;
-		Obj_Delete(objCutin_);
-	}
-}
