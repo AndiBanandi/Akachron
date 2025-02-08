@@ -168,3 +168,202 @@ func<int[]> CreateDemonCloud(int enemyType_)
 	}
 	return [actualEnemyObj] ~ fakes;
 }
+
+
+
+func<int[]> CreateDemonCarrion()
+{
+	int actualEnemyObj  = ObjEnemy_Create(OBJ_ENEMY_BOSS);
+	int sprVultureBody  = Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png",  64, 0,  64 + 63, 63);
+	int sprCowSkull     = Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png",   0, 0,       63, 63); //last so it's on top
+	int[] allObjs = [ actualEnemyObj, sprCowSkull, sprVultureBody ];
+	
+	
+	async
+	{
+		float ex; float ey;
+		float bx; float by;
+		int count = 0;
+		float th;
+		
+		float dangleSpeed = 3;
+		
+		while(!Obj_IsDeleted(actualEnemyObj))
+		{
+			ex = ObjRender_GetX(actualEnemyObj);
+			ey = ObjRender_GetY(actualEnemyObj);
+			th = 90 + 30 * sin(count);
+			bx = ex + 30 * cos(th);
+			by = ey + 30 * sin(th);
+			
+			ObjRender_SetPosition(sprCowSkull, ex, ey, 0);
+			ObjRender_SetAngleZ(sprCowSkull, 0);
+			
+			ObjRender_SetPosition(sprVultureBody,  bx, by, 0);
+			ObjRender_SetAngleZ(sprVultureBody, th - 90);
+
+			ObjEnemy_SetIntersectionCircleToShot(actualEnemyObj, ex, ey, 32);
+			ObjEnemy_SetIntersectionCircleToPlayer(actualEnemyObj, ex, ey, 32);
+			ObjEnemy_SetIntersectionCircleToPlayer(actualEnemyObj, bx, by, 32);
+			
+			int hits = ObjEnemy_GetInfo(actualEnemyObj, INFO_SHOT_HIT_COUNT);
+			float enemySpeed = ObjMove_GetSpeed(actualEnemyObj) * Float_GetSign(ObjMove_GetSpeedX(actualEnemyObj));
+			//dangleSpeed = clamp(dangleSpeed - 0.1 + 0.1 * enemySpeed + 0.1 * hits, 1, 5);
+			//dangleSpeed = clamp(dangleSpeed - 0.2 + 0.5 * enemySpeed + 0.05 * hits, 0, 5);
+			dangleSpeed = clamp(dangleSpeed * 0.99 + 2 * enemySpeed + 0.01 * hits * Float_GetSign(dangleSpeed), -5, 5);
+			dangleSpeed += AngularDistance(th, 90) * 0.005;
+			
+			if(rand_int(0, 10) == 0) _Feather();
+			
+			count += dangleSpeed;
+			yield;
+		}
+		Obj_Delete(sprCowSkull);
+		Obj_Delete(sprVultureBody);
+		
+		task _Feather()
+		{
+			int sprFeather = Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png", 128, 0, 128 + 63, 63);
+			ObjRender_SetScaleXYZ(sprFeather, 0.25, 0.25, 1);
+			float x0 = ex + rand(-30, 30);
+			float y0 = ey + rand(-30, 30);
+			float th0R = rand(0, 360);
+			float dthR = rand(-1, 1);
+			float thM = rand(0, 360);
+			float vM = rand(0.1, 2);
+			ascent(i in 0..60)
+			{
+				ObjRender_SetPosition(sprFeather, x0 + vM * i * cos(thM), y0 + vM * i * sin(thM), 0); 
+				ObjRender_SetAngleZ(sprFeather, th0R + dthR * i);
+				ObjRender_SetAlpha(sprFeather, 255 - i * 255 / 60);
+				yield;
+			}
+		}
+	}
+	return allObjs;
+}
+
+func<int[]> CreateDemonInertia()
+{
+	int actualEnemyObj  = ObjEnemy_Create(OBJ_ENEMY_BOSS);
+	int sprWheel = Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png",    0, 128,  63, 191);
+	int sprHead = Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png",    64, 128, 127, 191);
+	int[] allObjs = [ actualEnemyObj, sprHead, sprWheel ];
+	
+	async
+	{
+		float count = 0;
+		float dTh = 3;
+		float thWheel = 0;
+		float thHead = 0;
+		float thTension = 0; //how wound the "neck" is - "deferred" rotation of the head
+		bool unwinding = false;
+		float ex; float ey;
+		float scale = 0.5;
+		
+		while(!Obj_IsDeleted(actualEnemyObj))
+		{
+			ex = ObjRender_GetX(actualEnemyObj);
+			ey = ObjRender_GetY(actualEnemyObj);
+			
+			ObjRender_SetPosition(sprWheel, ex, ey, 0);
+			ObjRender_SetPosition(sprHead,  ex, ey, 0);
+			
+			thWheel += dTh;
+			thTension += dTh;
+			
+			if(     !unwinding && (|thTension|)     > 720) unwinding = true;
+			else if( unwinding && (|thTension|)%360 < 10)  unwinding = false; //why does it need such a large margin? 90, really?
+			
+			if(unwinding)
+			{
+				float thUnwind = 0.05 * thTension;
+				
+				if((|thTension|) < 30)
+				{
+					thUnwind = AngularDistance(thTension, 0) * 0.05;
+					if((|thUnwind|) < 6) thUnwind = 6 * Float_GetSign(thUnwind);
+				}
+				
+				thTension -= thUnwind;
+				thHead += thUnwind;
+
+				scale += (1 - scale) * 0.05;
+			}
+			else
+			{
+				thHead += AngularDistance(thHead, 0) * 0.05;	
+				scale += (0.75 - scale) * 0.05;
+			}
+			
+			ObjRender_SetAngleZ(sprWheel, thWheel);
+			ObjRender_SetAngleZ(sprHead, thHead);
+			ObjRender_SetScaleXYZ(sprHead, scale, scale, 1);
+			
+			ObjEnemy_SetIntersectionCircleToShot(actualEnemyObj, ex, ey, 32);
+			ObjEnemy_SetIntersectionCircleToPlayer(actualEnemyObj, ex, ey, 24);
+			
+			count++;
+			yield;
+		}
+		Obj_Delete(sprWheel);
+		Obj_Delete(sprHead);
+	}
+	return allObjs;
+}
+
+
+func<int[]> CreateDemonDominion()
+{
+	int actualEnemyObj = ObjEnemy_Create(OBJ_ENEMY_BOSS);
+	int[] needles = [];
+	int[] bouzus = [];
+	int numNeedles = 8;
+	int numBouzu   = 8;
+	loop(numBouzu)   bouzus  = bouzus  ~ [ Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png", 127, 192, 191, 255) ];
+	loop(numNeedles) needles = needles ~ [ Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png",  64, 192, 127, 255) ];
+	int sprDoll = Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png", 0, 192, 63, 255);
+	
+	int[] allObjs = [ actualEnemyObj, sprDoll ] ~ needles ~ bouzus;
+	
+	
+	async
+	{
+		int count = 0;
+		float ex; float ey;
+		while(!Obj_IsDeleted(actualEnemyObj))
+		{
+			ex = ObjRender_GetX(actualEnemyObj);
+			ey = ObjRender_GetY(actualEnemyObj);
+			ObjRender_SetPosition(sprDoll, ex, ey, 0);
+
+			ascent(i in 0..numNeedles)
+			{
+				float th = i * 360 / numNeedles;
+				float r = 15 + 15 * cos(count * 3 + i * 720 / numNeedles);
+				ObjRender_SetPosition(needles[i], ex + r * cos(th), ey + r * sin(th), 0);
+				ObjRender_SetAngleZ(needles[i], th - 90);
+				ObjRender_SetScaleXYZ(needles[i], 0.5, 0.75, 1);
+			}
+			
+			ascent(i in 0..numBouzu)
+			{
+				float th = i * 360 / numBouzu + count;
+				float r = 75 + 15 * cos(count * 1.5 + i * 720 / numBouzu);
+				ObjRender_SetPosition(bouzus[i], ex + r * cos(th), ey + r * sin(th), 0);
+				ObjRender_SetScaleXYZ(bouzus[i], 0.5, 0.5, 1);
+			}
+			
+			ObjEnemy_SetIntersectionCircleToShot(actualEnemyObj, ex, ey, 32);
+			ObjEnemy_SetIntersectionCircleToPlayer(actualEnemyObj, ex, ey, 32);
+			
+			count++;
+			yield;
+		}
+		Obj_Delete(sprDoll);
+		for each(needle in needles) Obj_Delete(needle);
+		for each(bouzu in bouzus) Obj_Delete(bouzu);
+	}
+	
+	return allObjs;
+}

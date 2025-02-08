@@ -8,7 +8,7 @@ func<int> Create2DSprite(string path_, int srcX0_, int srcY0_, int srcX1_, int s
 	ObjPrim_SetTexture(obj, path_);
 	ObjSprite2D_SetSourceRect(obj, srcX0_, srcY0_, srcX1_, srcY1_);
 	ObjSprite2D_SetDestCenter(obj);
-	Obj_SetRenderPriorityI(obj, PRI_DEFAULT);
+	Obj_SetRenderPriorityI(obj, PRI_SHOT - 10);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	return obj;
 }
