@@ -1,5 +1,50 @@
 #include "/script/Akachron/lib/lib_image.txt"
 
+LoadTextureInLoadThread(DIR_IMAGE ~ "/DemonPlaceholderSheet.png");
+
+
+//Adaptable to whatever the needs are
+function CreateEnemy(){ return CreateEnemy(OBJ_ENEMY, true); }
+function CreateEnemy(let type_){ return CreateEnemy(type_, true); }
+function CreateEnemy(let type_, bool doIntersection_)
+{
+	int objEnemy = ObjEnemy_Create(type_);
+	ObjEnemy_Regist(objEnemy);
+	Obj_SetRenderPriorityI(objEnemy, PRI_ENEMY);
+	//let imgDemon = DIR_IMAGE ~ "/GenericAkashicDemon.png";
+	//ObjPrim_SetTexture(objEnemy, imgDemon);
+	//ObjSprite2D_SetSourceRect(objEnemy, 0, 0, 63, 63);
+	//ObjSprite2D_SetDestCenter(objEnemy);
+	ObjEnemy_SetLife(objEnemy, 300);
+	ObjEnemy_SetDamageRate(objEnemy, 1.0, 1.0);
+	if(type_ == OBJ_ENEMY_BOSS) ObjEnemy_SetDamageRate(objEnemy, 0.1, 0.1);
+	
+	async
+	{
+		while(!Obj_IsDeleted(objEnemy) && ObjEnemy_GetInfo(objEnemy, INFO_LIFE) > 0)
+		{
+			if(doIntersection_)
+			{
+				float scale = (ObjRender_GetScaleX(objEnemy) + ObjRender_GetScaleY(objEnemy)) / 2;
+				ObjEnemy_SetIntersectionCircleToShot(objEnemy,   ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 32 * scale);
+				ObjEnemy_SetIntersectionCircleToPlayer(objEnemy, ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 24 * scale);
+			}
+			yield;
+		}
+		if(!Obj_IsDeleted(objEnemy))
+		{
+			_EffectEnemyBurst(ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy));
+			ExPlaySE(SE_SHOT_QUIET); //because i don't currently have any sound effects other than shot
+			int pointVal = 10 * round(100 / ObjEnemy_GetInfo(objEnemy, INFO_DAMAGE_RATE_SHOT));
+			AddScore(pointVal); //tankier enemies are worth more
+			Obj_Delete(objEnemy);
+		}
+	}
+	
+	return objEnemy;
+}
+
+
 function CreateGenericAkashicDemon(let _isBoss)
 {
 	let enemyType;
@@ -75,48 +120,6 @@ task _FiddleWithDemon(int objEnemy_, bool doScale_)
 	}
 }
 
-
-
-//Adaptable to whatever the needs are
-function CreateEnemy(){ return CreateEnemy(OBJ_ENEMY, true); }
-function CreateEnemy(let type_){ return CreateEnemy(type_, true); }
-function CreateEnemy(let type_, bool doIntersection_)
-{
-	int objEnemy = ObjEnemy_Create(type_);
-	ObjEnemy_Regist(objEnemy);
-	Obj_SetRenderPriorityI(objEnemy, PRI_ENEMY);
-	let imgDemon = DIR_IMAGE ~ "/GenericAkashicDemon.png";
-	ObjPrim_SetTexture(objEnemy, imgDemon);
-	ObjSprite2D_SetSourceRect(objEnemy, 0, 0, 63, 63);
-	ObjSprite2D_SetDestCenter(objEnemy);
-	ObjEnemy_SetLife(objEnemy, 300);
-	ObjEnemy_SetDamageRate(objEnemy, 1.0, 1.0);
-	if(type_ == OBJ_ENEMY_BOSS) ObjEnemy_SetDamageRate(objEnemy, 0.1, 0.1);
-	
-	async
-	{
-		while(!Obj_IsDeleted(objEnemy) && ObjEnemy_GetInfo(objEnemy, INFO_LIFE) > 0)
-		{
-			if(doIntersection_)
-			{
-				float scale = (ObjRender_GetScaleX(objEnemy) + ObjRender_GetScaleY(objEnemy)) / 2;
-				ObjEnemy_SetIntersectionCircleToShot(objEnemy,   ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 32 * scale);
-				ObjEnemy_SetIntersectionCircleToPlayer(objEnemy, ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy), 24 * scale);
-			}
-			yield;
-		}
-		if(!Obj_IsDeleted(objEnemy))
-		{
-			_EffectEnemyBurst(ObjMove_GetX(objEnemy), ObjMove_GetY(objEnemy));
-			ExPlaySE(SE_SHOT_QUIET); //because i don't currently have any sound effects other than shot
-			int pointVal = 10 * round(100 / ObjEnemy_GetInfo(objEnemy, INFO_DAMAGE_RATE_SHOT));
-			AddScore(pointVal); //tankier enemies are worth more
-			Obj_Delete(objEnemy);
-		}
-	}
-	
-	return objEnemy;
-}
 
 
 func<int[]> CreateDemonCloud(int enemyType_)
@@ -320,16 +323,28 @@ func<int[]> CreateDemonDominion()
 	int[] bouzus = [];
 	int numNeedles = 8;
 	int numBouzu   = 8;
-	loop(numBouzu)   bouzus  = bouzus  ~ [ Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png", 127, 192, 191, 255) ];
+	//TODO: Use actual bouzu enemies
+	//loop(numBouzu)   bouzus  = bouzus  ~ [ Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png", 127, 192, 191, 255) ];
+	loop(numBouzu)   bouzus  = bouzus  ~ [ CreateDemonBouzu(false) ];
 	loop(numNeedles) needles = needles ~ [ Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png",  64, 192, 127, 255) ];
 	int sprDoll = Create2DSprite(DIR_IMAGE ~ "/DemonPlaceholderSheet.png", 0, 192, 63, 255);
 	
 	int[] allObjs = [ actualEnemyObj, sprDoll ] ~ needles ~ bouzus;
 	
+	for each(bouzu in bouzus){ ObjMove_SetProcessMovement(bouzu, false); }
+	
+	Obj_SetValue(actualEnemyObj, "ARRAY_BOUZU",  bouzus);
+	Obj_SetValue(actualEnemyObj, "ARRAY_NEEDLE", needles);
+	
+	ascent(i in 0..numNeedles)
+	{
+		ObjRender_SetColorHSV(needles[i], HUE_RED + i * 360 / numNeedles, 64, 255);
+	}
 	
 	async
 	{
-		int count = 0;
+		//int count = 0;
+		int count = GetCommonData("DEMON_DOMINION_COUNT", 0);
 		float ex; float ey;
 		while(!Obj_IsDeleted(actualEnemyObj))
 		{
@@ -348,10 +363,17 @@ func<int[]> CreateDemonDominion()
 			
 			ascent(i in 0..numBouzu)
 			{
-				float th = i * 360 / numBouzu + count;
-				float r = 75 + 15 * cos(count * 1.5 + i * 720 / numBouzu);
-				ObjRender_SetPosition(bouzus[i], ex + r * cos(th), ey + r * sin(th), 0);
-				ObjRender_SetScaleXYZ(bouzus[i], 0.5, 0.5, 1);
+				if(!ObjMove_GetProcessMovement(bouzus[i]))
+				{
+					float th = i * 360 / numBouzu + count;
+					float r = 75 + 15 * cos(count * 1.5 + i * 720 / numBouzu);
+					ObjMove_SetPosition(bouzus[i], ex + r * cos(th), ey + r * sin(th));
+					ObjMove_SetProcessMovement(bouzus[i], false);   //i'm setting their position manually, so no need to process
+					ObjMove_SetSpeedX(bouzus[i], 1 * cos(th + 90)); //setting their speed informs their animation
+					ObjRender_SetScaleXYZ(bouzus[i], 0.5, 0.5, 1);
+					ObjRender_SetAlpha(bouzus[i], 192);
+					ObjRender_SetColorHSV(bouzus[i], HUE_RED + i * 360 / numNeedles, 128, 192);
+				}
 			}
 			
 			ObjEnemy_SetIntersectionCircleToShot(actualEnemyObj, ex, ey, 32);
@@ -360,10 +382,52 @@ func<int[]> CreateDemonDominion()
 			count++;
 			yield;
 		}
+		SetCommonData("DEMON_DOMINION_COUNT", count);
 		Obj_Delete(sprDoll);
 		for each(needle in needles) Obj_Delete(needle);
 		for each(bouzu in bouzus) Obj_Delete(bouzu);
 	}
 	
 	return allObjs;
+}
+func<int> CreateDemonBouzu(){ return CreateDemonBouzu(true); }
+func<int> CreateDemonBouzu(bool doCollision_)
+{
+	int obj = CreateEnemy(OBJ_ENEMY, doCollision_);
+	ObjPrim_SetTexture(obj, DIR_IMAGE ~ "/DemonPlaceholderSheet.png");
+	ObjSprite2D_SetSourceRect(obj, 127, 192, 191, 255);
+	ObjSprite2D_SetDestCenter(obj);
+	ObjRender_SetScaleXYZ(obj, 0.5, 0.5, 1);
+	ObjRender_SetAlpha(obj, 200);
+	//TODO: Add a beating heart of some sort under the bouzu
+	
+	//async
+	//{
+	//	ascent(i in 0..10)
+	//	{
+	//		ObjRender_SetScaleXYZ(obj, 0.5 * i / 9, 0.5 * i / 9, 1);
+	//		yield;
+	//	}
+	//}
+	
+	async
+	{
+		int count = 0;
+		float th = 270;
+		float thMove = 0;
+		while(!Obj_IsDeleted(obj))
+		{
+			//if(ObjMove_GetProcessMovement(obj))
+			{
+				//thMove = ObjMove_GetAngle(obj);
+				//th = thMove + AngularDistance(thMove, 270) * 0.75;
+				th = dottheta(0, 0, ObjMove_GetSpeedX(obj), -5);
+				ObjRender_SetAngleZ(obj, th + 90);
+			}
+			count++;
+			yield;
+		}
+	}
+	
+	return obj;
 }
