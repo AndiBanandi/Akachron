@@ -351,6 +351,8 @@ func<int[]> CreateDemonDominion()
 			ex = ObjRender_GetX(actualEnemyObj);
 			ey = ObjRender_GetY(actualEnemyObj);
 			ObjRender_SetPosition(sprDoll, ex, ey, 0);
+			
+			ObjRender_SetColorHSV(sprDoll, HUE_RED, 128 - 50 * cos(count), 200 + 50 * sin(count));
 
 			ascent(i in 0..numNeedles)
 			{
@@ -371,8 +373,9 @@ func<int[]> CreateDemonDominion()
 					ObjMove_SetProcessMovement(bouzus[i], false);   //i'm setting their position manually, so no need to process
 					ObjMove_SetSpeedX(bouzus[i], 1 * cos(th + 90)); //setting their speed informs their animation
 					ObjRender_SetScaleXYZ(bouzus[i], 0.5, 0.5, 1);
-					ObjRender_SetAlpha(bouzus[i], 192);
-					ObjRender_SetColorHSV(bouzus[i], HUE_RED + i * 360 / numNeedles, 128, 192);
+					ObjRender_SetAlpha(bouzus[i], 255);
+					//ObjRender_SetColorHSV(bouzus[i], HUE_RED + i * 360 / numNeedles, 128, 192);
+					ObjRender_SetColorHSV(bouzus[i], HUE_RED + i * 360 / numNeedles, 255, 64);
 				}
 			}
 			
