@@ -58,6 +58,9 @@ task _WrapShot(int shot_, string sides_, int maxTimes_)
 	bool T = contains(sides_, 'T');
 	bool B = contains(sides_, 'B');
 	
+	bool doSetVal = contains(sides_, 'V');
+	int timesWrapped = 0;
+	
 	while(!Obj_IsDeleted(shot_))
 	{
 		sx = ObjMove_GetX(shot_);
@@ -65,19 +68,23 @@ task _WrapShot(int shot_, string sides_, int maxTimes_)
 		if((L && sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (R && sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
 		{
 			ObjMove_SetX(shot_, ObjMove_GetX(shot_) % GetStgFrameWidth());
-			if(maxTimes_ <= 1) return;
+			timesWrapped++;
+			if(doSetVal) Obj_SetValue(shot_, "TimesWrapped", timesWrapped);
+			if(timesWrapped <= maxTimes_) break;
 		}
 		if((T && sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (B && sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
 		{
 			ObjMove_SetY(shot_, ObjMove_GetY(shot_) % GetStgFrameHeight());
-			if(maxTimes_ <= 1) return;
+			timesWrapped++;
+			if(doSetVal) Obj_SetValue(shot_, "TimesWrapped", timesWrapped);
+			if(timesWrapped <= maxTimes_) break;
 		}
 		yield;
 	}
 }
 
-task _BounceShot(int shot_){ _BounceShot(shot_, "LRTB", 99); }
-task _BounceShot(int shot_, string sides_){ _BounceShot(shot_, sides_, 99); }
+task _BounceShot(int shot_){ _BounceShot(shot_, "LRTB", 1); }
+task _BounceShot(int shot_, string sides_){ _BounceShot(shot_, sides_, 1); }
 task _BounceShot(int shot_, string sides_, int maxTimes_)
 {
 	int sx; int sy;
@@ -86,6 +93,9 @@ task _BounceShot(int shot_, string sides_, int maxTimes_)
 	bool T = contains(sides_, 'T');
 	bool B = contains(sides_, 'B');
 	
+	bool doSetVal = contains(sides_, 'V');
+	int timesBounced = 0;
+	
 	while(!Obj_IsDeleted(shot_))
 	{
 		sx = ObjMove_GetX(shot_);
@@ -93,12 +103,16 @@ task _BounceShot(int shot_, string sides_, int maxTimes_)
 		if((L && sx <= 0 && ObjMove_GetSpeedX(shot_) < 0) || (R && sx >= GetStgFrameWidth() && ObjMove_GetSpeedX(shot_) > 0))
 		{
 			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 90));
-			if(maxTimes_ <= 1) return;
+			timesBounced++;
+			if(doSetVal) Obj_SetValue(shot_, "TimesBounced", timesBounced);
+			if(timesBounced <= maxTimes_) break;
 		}
 		if((T && sy <= 0 && ObjMove_GetSpeedY(shot_) < 0) || (B && sy >= GetStgFrameHeight() && ObjMove_GetSpeedY(shot_) > 0))
 		{
 			ObjMove_SetAngle(shot_, ReflectAngle(ObjMove_GetAngle(shot_), 0));
-			if(maxTimes_ <= 1) return;
+			timesBounced++;
+			if(doSetVal) Obj_SetValue(shot_, "TimesBounced", timesBounced);
+			if(timesBounced <= maxTimes_) break;
 		}
 		yield;
 	}
